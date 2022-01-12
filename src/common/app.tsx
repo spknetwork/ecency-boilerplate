@@ -40,7 +40,7 @@ const App = (props: any) => {
             if(props.router.location.pathname && props.router.location.pathname !== "/faq"){
             i18n.changeLanguage(props.global.lang);
         }
-    },[props.router.location.pathname]);
+    },[props.router && props.router.location.pathname]);
 
     return (
         <>
