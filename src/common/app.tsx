@@ -35,17 +35,12 @@ import i18n from "i18next";
 import { pageMapDispatchToProps, pageMapStateToProps } from "./pages/common";
 import { connect } from "react-redux";
 
-const App = ({ setLang }: any) => {
+const App = (props: any) => {
         useEffect(() => {
-            let pathname = window.location.pathname;
-            if(pathname !== '/faq'){
-                const currentLang = ls.get("current-language");
-                if(currentLang){
-                    setLang(currentLang);
-                    i18n.changeLanguage(currentLang)
-                }
+            if(props.router.location.pathname && props.router.location.pathname !== "/faq"){
+            i18n.changeLanguage(props.global.lang);
         }
-    },[]);
+    },[props.router.location.pathname]);
 
     return (
         <>

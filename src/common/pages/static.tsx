@@ -824,23 +824,17 @@ class FaqPage extends Component<PageProps, FAQPageState> {
         const languageFromList = langOptions.find(item => item.code.split("-")[0] === languageFromUrl);
 
         if(languageFromList){
-            props.setLang(languageFromList.code);
             i18n.changeLanguage(languageFromList.code)
         }
+
         this.state = {
             search: searchFromUrl || "",
             currentLanguage:props.global.lang
         }
-
-        if(languageFromList && props.global.lang !== languageFromList.code){
-            ls.set("current-language", props.global.lang)
-        }
     }
 
     componentWillUnmount(){
-        const currentLang = ls.get("current-language");
-        this.props.setLang(currentLang);
-        i18n.changeLanguage(currentLang);
+        i18n.changeLanguage(this.props.global.lang)
     }
 
     copyToClipboard = (text: string) => {
