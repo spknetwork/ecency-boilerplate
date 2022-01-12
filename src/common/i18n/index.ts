@@ -106,11 +106,15 @@ const resources = {
 };
 
 i18n.init({
+    react: {
+        wait: true,
+    },
     resources,
     fallbackLng: "en-US",
     interpolation: {
         escapeValue: false
     },
+    lng: i18n.options.lng
 })
 
 i18n.on("languageChanged", function (lang) {

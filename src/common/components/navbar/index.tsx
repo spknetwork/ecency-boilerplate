@@ -36,7 +36,7 @@ import {_t} from "../../i18n";
 
 import _c from "../../util/fix-class-names";
 
-import {brightnessSvg, pencilOutlineSvg, menuSvg, closeSvg, magnifySvg, accountOutlineSvg, powerDownSvg, chevronDownSvgForSlider, moonSvg, globeSvg, bellSvg, walletTravelSvg, walletSvg, notificationSvg, pencilOutlinedSvg, userOutlineSvg, downArrowSvg, chevronUpSvg, upArrowSvg, keySvg, sunSvg, gifCardSvg} from "../../img/svg";
+import {brightnessSvg, pencilOutlineSvg, menuSvg, closeSvg, magnifySvg, moonSvg, globeSvg, walletSvg, notificationSvg, pencilOutlinedSvg, userOutlineSvg, downArrowSvg, chevronUpSvg, upArrowSvg, keySvg, sunSvg, gifCardSvg} from "../../img/svg";
 import userAvatar from "../user-avatar";
 import { downVotingPower, votingPower } from "../../api/hive";
 //const logo = require('../../img/logo-circle.svg');
@@ -164,6 +164,8 @@ export class NavBar extends Component<Props, State> {
             rootElement && rootElement.scrollIntoView()
         }
     }
+
+
 
     handleIconClick = () => {
         if( "/" !== this.props?.location?.pathname
