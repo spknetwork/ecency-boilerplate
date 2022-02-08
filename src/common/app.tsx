@@ -35,6 +35,7 @@ import * as ls from './util/local-storage';
 import i18n from "i18next";
 import { pageMapDispatchToProps, pageMapStateToProps } from "./pages/common";
 import { connect } from "react-redux";
+import LandingContainer from "./pages/landing-container";
 
 const App = ({ setLang }: any) => {
         useEffect(() => {
@@ -52,9 +53,9 @@ const App = ({ setLang }: any) => {
         <>
             <Tracker/>
             <Switch>
-                <Route exact={true} path={routes.HOME} component={EntryIndexContainer}/>
-                <Route exact={true} strict={true} path={routes.FILTER} component={EntryIndexContainer}/>
-                <Route exact={true} strict={true} path={routes.USER_FEED} component={EntryIndexContainer}/>
+                <Route exact={true} path={routes.HOME} component={LandingContainer}/>
+                <Route exact={true} strict={true} path={routes.FILTER} component={LandingContainer}/>
+                <Route exact={true} strict={true} path={routes.USER_FEED} component={LandingContainer}/>
                 <Route exact={true} strict={true} path={routes.USER} component={ProfileContainer}/>
                 <Route exact={true} strict={true} path={routes.USER_SECTION} component={ProfileContainer}/>
                 <Route exact={true} strict={true} path={routes.ENTRY} component={EntryContainer}/>
@@ -62,7 +63,7 @@ const App = ({ setLang }: any) => {
                 <Route exact={true} strict={true} path={routes.COMMUNITIES_CREATE} component={CommunityCreateContainer}/>
                 <Route exact={true} strict={true} path={routes.COMMUNITIES_CREATE_HS} component={CommunityCreateHSContainer}/>
                 <Route exact={true} strict={true} path={routes.COMMUNITY} component={CommunityContainer}/>
-                <Route exact={true} strict={true} path={routes.FILTER_TAG} component={EntryIndexContainer}/>
+                <Route exact={true} strict={true} path={routes.FILTER_TAG} component={LandingContainer}/>
                 <Route exact={true} strict={true} path={routes.DISCOVER} component={DiscoverContainer}/>
                 <Route exact={true} path={routes.SEARCH} component={SearchPageContainer}/>
                 <Route exact={true} path={routes.SEARCH_MORE} component={SearchMorePageContainer}/>
