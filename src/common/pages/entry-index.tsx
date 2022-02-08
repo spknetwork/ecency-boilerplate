@@ -49,7 +49,7 @@ class EntryIndexPage extends Component<PageProps, State> {
         const {global, fetchEntries, fetchTrendingTags} = this.props;
         fetchEntries(global.filter, global.tag, false);
         fetchTrendingTags();
-        this.props.activeUser !== null ? this.changeStepTwo() :this.changeStepOne() 
+        // this.props.activeUser !== null ? this.changeStepTwo() :this.changeStepOne() 
     }
 
     componentDidUpdate(prevProps: Readonly<PageProps>): void {
@@ -90,17 +90,17 @@ class EntryIndexPage extends Component<PageProps, State> {
         fetchEntries(global.filter, global.tag, false);
     }
 
-    changeStepOne = () => {
-        this.setState({
-            step: 1
-        })
-    }
+    // changeStepOne = () => {
+    //     this.setState({
+    //         step: 1
+    //     })
+    // }
 
-    changeStepTwo = () => {
-        this.setState({
-            step: 2
-        })
-    }
+    // changeStepTwo = () => {
+    //     this.setState({
+    //         step: 2
+    //     })
+    // }
 
     render() {
         const {global, activeUser, entries, location} = this.props;
@@ -117,56 +117,56 @@ class EntryIndexPage extends Component<PageProps, State> {
         const loading = data.loading;
 
         //  Meta config
-        const fC = capitalize(filter);
-        let title = _t("entry-index.title", {f: fC});
-        let description = _t("entry-index.description", {f: fC});
-        let url = `/${filter}`;
-        let canonical = `${defaults.base}/${filter}`;
-        let rss = "";
+        // const fC = capitalize(filter);
+        // let title = _t("entry-index.title", {f: fC});
+        // let description = _t("entry-index.description", {f: fC});
+        // let url = `/${filter}`;
+        // let canonical = `${defaults.base}/${filter}`;
+        // let rss = "";
 
-        if (tag) {
-            if (activeUser && tag === "my") {
-                title = `@${activeUser.username}'s community feed on decentralized web`;
-                description = _t("entry-index.description-user-feed", {u: tag});
-                canonical = `${defaults.base}/@${tag}/${filter}`;
-            } else if (tag.startsWith('@')) {
-                title = `${tag}'s ${filter} on decentralized web`;
-                description = _t("entry-index.description-user-feed", {u: tag});
-                canonical = `${defaults.base}/@${tag}/${filter}`;
-            } else {
-                title = `latest #${tag} ${filter} topics on internet`;
-                description = _t("entry-index.description-tag", {f: fC, t: tag});
+        // if (tag) {
+        //     if (activeUser && tag === "my") {
+        //         title = `@${activeUser.username}'s community feed on decentralized web`;
+        //         description = _t("entry-index.description-user-feed", {u: tag});
+        //         canonical = `${defaults.base}/@${tag}/${filter}`;
+        //     } else if (tag.startsWith('@')) {
+        //         title = `${tag}'s ${filter} on decentralized web`;
+        //         description = _t("entry-index.description-user-feed", {u: tag});
+        //         canonical = `${defaults.base}/@${tag}/${filter}`;
+        //     } else {
+        //         title = `latest #${tag} ${filter} topics on internet`;
+        //         description = _t("entry-index.description-tag", {f: fC, t: tag});
 
-                url = `/${filter}/${tag}`;
-                canonical = `${defaults.base}/${filter}/${tag}`;
-                rss = `${defaults.base}/${filter}/${tag}/rss.xml`;
-            }
-        }
+        //         url = `/${filter}/${tag}`;
+        //         canonical = `${defaults.base}/${filter}/${tag}`;
+        //         rss = `${defaults.base}/${filter}/${tag}/rss.xml`;
+        //     }
+        // }
 
-        const metaProps = {title, description, url, canonical, rss};
+        // const metaProps = {title, description, url, canonical, rss};
 
         const promoted = entries['__promoted__'].entries;
 
-        const showEntryPage = this.state.step === 2 
-        // || activeUser !== null || activeUser === null
-        || location?.pathname?.startsWith("/hot")
-        || location?.pathname?.startsWith("/created")
-        || location?.pathname?.startsWith("/trending")
-        || location?.pathname?.startsWith("/payout")
-        || location?.pathname?.startsWith("/payout_comments");
+        // const showEntryPage = this.state.step === 2 
+        // // || activeUser !== null || activeUser === null
+        // || location?.pathname?.startsWith("/hot")
+        // || location?.pathname?.startsWith("/created")
+        // || location?.pathname?.startsWith("/trending")
+        // || location?.pathname?.startsWith("/payout")
+        // || location?.pathname?.startsWith("/payout_comments");
         let containerClasses = global.isElectron ? "app-content entry-index-page mt-0 pt-6" : "app-content entry-index-page";
     
         return (
             <>
-                <Meta {...metaProps} />
+                {/* <Meta {...metaProps} />
                 <ScrollToTop/>
                 <Theme global={this.props.global}/>
                 <Feedback/>
                 {global.isElectron ?
                     NavBarElectron({
                         ...this.props,
-                        reloadFn: this.reload,
-                        reloading: loading,
+                        // reloadFn: this.reload,
+                        // reloading: loading,
                         step:this.state.step,
                         setStepTwo: this.changeStepTwo
                     }) :
@@ -178,7 +178,8 @@ class EntryIndexPage extends Component<PageProps, State> {
                     <LandingPage {...this.props} changeState={this.changeStepTwo}/>
                 }
                 {
-                    showEntryPage && <div className={containerClasses}>
+                    showEntryPage &&  */}
+                    <div className={containerClasses}>
                         <div className="tags-side">
                             {!global.isMobile && (
                                 <>
@@ -208,7 +209,7 @@ class EntryIndexPage extends Component<PageProps, State> {
                             )}
                         </div>
                     </div>
-                }
+                {/* } */}
                 <DetectBottom onBottom={this.bottomReached}/>
             </>
         );

@@ -35,6 +35,7 @@ import * as ls from './util/local-storage';
 import i18n from "i18next";
 import { pageMapDispatchToProps, pageMapStateToProps } from "./pages/common";
 import { connect } from "react-redux";
+import landingContainer from "./pages/landing-container";
 
 const App = ({ setLang }: any) => {
         useEffect(() => {
@@ -52,7 +53,7 @@ const App = ({ setLang }: any) => {
         <>
             <Tracker/>
             <Switch>
-                <Route exact={true} path={routes.HOME} component={EntryIndexContainer}/>
+                <Route exact={true} path={routes.HOME} component={landingContainer}/>
                 <Route exact={true} strict={true} path={routes.FILTER} component={EntryIndexContainer}/>
                 <Route exact={true} strict={true} path={routes.USER_FEED} component={EntryIndexContainer}/>
                 <Route exact={true} strict={true} path={routes.USER} component={ProfileContainer}/>
