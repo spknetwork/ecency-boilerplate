@@ -8,7 +8,7 @@ import "react-markdown-editor-lite/lib/index.css";
 const initialVideoFormState = {
   title: "",
   description: "",
-  tags: [],
+  tags: [] as string[],
   language: "",
   community: "",
 };
@@ -31,7 +31,11 @@ const VideoSubmitContainer: React.FC = () => {
       <StyledForm onSubmit={() => handleSubmit()}>
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Title</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Control
+            type="text"
+            onChange={(e) => setData({ ...data, title: e.target.value })}
+            placeholder="Enter title"
+          />
         </Form.Group>
         <Form.Group>
           <Form.Label>Description</Form.Label>
@@ -44,20 +48,52 @@ const VideoSubmitContainer: React.FC = () => {
         </Form.Group>
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Tags</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Control
+            onChange={(e) =>
+              setData({ ...data, tags: e.target.value.split(",") })
+            }
+            type="text"
+            placeholder="Enter Tags"
+          />
+          <Form.Text>
+            Every tag is separated by <b>,</b>
+          </Form.Text>
         </Form.Group>
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Language</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Control
+            onChange={(e) => setData({ ...data, language: e.target.value })}
+            type="text"
+            placeholder="Enter language"
+          />
         </Form.Group>
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Community</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Control
+            onChange={(e) => setData({ ...data, community: e.target.value })}
+            type="text"
+            placeholder="Enter community name"
+          />
         </Form.Group>
       </StyledForm>
+      <Preview>
+        <h1>{data.title}</h1>
+        <h1>{data.community}</h1>
+        <h1>{mdParser.render(data.description)}</h1>
+        <h1>{data.tags}</h1>
+        <h1>{data.language}</h1>
+      </Preview>
     </SubmitContainer>
   );
 };
+
+const Preview = styled.div`
+  width: 100%;
+  max-width: 45%;
+  margin-left: 1rem;
+  border-radius: 1rem;
+  background-color: $sky-primary;
+`;
 
 const StyledForm = styled(Form)``;
 
