@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import { Helmet } from "react-helmet";
+import { getCommunities } from "../../api/bridge";
 
 import defaults from "../../constants/defaults.json";
 
@@ -17,29 +18,41 @@ interface Props {
   rss?: string;
 }
 
-const capitalize = (s: string) => {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-const title_ = (s: string): string => `${s} | ${capitalize(defaults.name)}`;
-
 export default class Meta extends Component<Props> {
   render() {
-    const { title, description, url, canonical, tag, keywords, published, modified, rss } = this.props;
+    const {
+      title,
+      description,
+      url,
+      canonical,
+      tag,
+      keywords,
+      published,
+      modified,
+      rss,
+    } = this.props;
     let { image } = this.props;
 
-    if (!image) {
-      image = `${defaults.base}/og.jpg`;
-    }
+    getCommunities().then((communities) => {
+      const community = communities?.find((x) => x.name === "hive-176364");
+
+      if (!image) {
+        image = community
+          ? `${defaults.imageServer}/u/${community.name}/avatar/lardge`
+          : `${defaults.base}/og.jpg`;
+      }
+    });
 
     return (
       <>
         <Helmet>
-          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+          />
           <meta property="og:site_name" content={defaults.name} />
           <meta property="og:type" content="website" />
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:site" content={defaults.twitterHandle} />
         </Helmet>
 
         {title && (
@@ -77,7 +90,12 @@ export default class Meta extends Component<Props> {
         {url && (
           <Helmet>
             <meta property="og:url" content={`${defaults.base}${url}`} />
-            <meta itemProp="mainEntityOfPage" itemScope={true} itemType="http://schema.org/WebPage" itemID={`${defaults.base}${url}`}/>
+            <meta
+              itemProp="mainEntityOfPage"
+              itemScope={true}
+              itemType="http://schema.org/WebPage"
+              itemID={`${defaults.base}${url}`}
+            />
           </Helmet>
         )}
 

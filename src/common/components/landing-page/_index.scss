@@ -154,6 +154,18 @@
       color: $dark-sky-blue;
     }
 
+    @include themify(sky) {
+      color: $white-three;
+    }
+
+    @include themify(dusk) {
+      color: $white-three;
+    }
+
+    @include themify(burning) {
+      color: $burning-primary;
+    }
+
     @include themify(night) {
       color: $pinkish-grey;
     }

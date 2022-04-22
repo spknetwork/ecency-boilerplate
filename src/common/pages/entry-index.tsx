@@ -53,7 +53,6 @@ class EntryIndexPage extends Component<PageProps, State> {
     const { global, fetchEntries, fetchTrendingTags } = this.props;
     fetchEntries(global.filter, global.tag, false);
     fetchTrendingTags();
-    console.log(setupConfig)
     const community = global.hive_id;
 
     if (community) {

@@ -67,7 +67,6 @@ import {checkSvg, contentSaveSvg} from "../img/svg";
 
 import {PageProps, pageMapDispatchToProps, pageMapStateToProps} from "./common";
 import ModalConfirm from "../components/modal-confirm";
-import ResizableTextarea from "../components/resizable-text-area";
 import TextareaAutocomplete from "../components/textarea-autocomplete";
 
 interface PostBase {

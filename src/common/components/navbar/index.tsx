@@ -53,6 +53,7 @@ import {
   keySvg,
   sunSvg,
   gifCardSvg,
+  cameraSvg,
 } from "../../img/svg";
 import userAvatar from "../user-avatar";
 import { downVotingPower, votingPower } from "../../api/hive";
@@ -361,6 +362,13 @@ export class NavBar extends Component<Props, State> {
                   <ToolTip content={_t("navbar.post")}>
                     <Link className="switch-theme pencil" to="/submit">
                       {pencilOutlineSvg}
+                    </Link>
+                  </ToolTip>
+                )}
+                {(step !== 1 || transparentVerify) && (
+                  <ToolTip content={_t("navbar.post")}>
+                    <Link className="switch-theme pencil" to="/submit-video">
+                      {cameraSvg}
                     </Link>
                   </ToolTip>
                 )}
