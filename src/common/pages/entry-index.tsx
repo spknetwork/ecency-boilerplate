@@ -164,11 +164,10 @@ class EntryIndexPage extends Component<PageProps, State> {
       ? "app-content entry-index-page mt-0 pt-6"
       : "app-content entry-index-page";
 
+    console.log("here");
     return (
       <>
-        {!!this.state.community && (
-          <Redirect to={`/trending/${this.state.community}`} />
-        )}
+        {!!this.state.community && <Redirect to={`/trending`} />}
         <Meta {...metaProps} />
         <ScrollToTop />
         <Theme global={this.props.global} />

@@ -383,7 +383,8 @@ export class NavBar extends Component<Props, State> {
     render() {
         const {global, activeUser, history, location, ui, step, match} = this.props;        
         const themeText = global.theme == Theme.day ? _t("navbar.night-theme") : _t("navbar.day-theme");
-        const communityPage = match && match.params.name && isCommunity(match.params.name)
+        const communityPage =
+          match && global.hive_id && isCommunity(global.hive_id);
         const tagValue = global.tag ? `/${global.tag}` : ''
         const logoHref = activeUser ? 
         (communityPage || ((global.tag.includes('@')) && (['engine','wallet','points','communities','settings','permissions','comments','replies','blog', 'posts'].includes(global.filter)))) ?

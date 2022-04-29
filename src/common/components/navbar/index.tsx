@@ -240,7 +240,7 @@ export class NavBar extends Component<Props, State> {
         ? _t("navbar.night-theme")
         : _t(`navbar.${global.ctheme}-theme`);
     const communityPage =
-      match && match.params.name && isCommunity(match.params.name);
+      community && match && community.name && isCommunity(community.name);
     const tagValue = global.tag ? `/${global.tag}` : "";
     const logoHref = activeUser
       ? communityPage ||
