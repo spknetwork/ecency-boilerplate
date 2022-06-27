@@ -95,10 +95,11 @@ class CommunityPage extends BaseComponent<Props, State> {
 
   async componentDidMount() {
     await this.ensureData();
-    const { match, fetchEntries } = this.props;
+    const { match, fetchEntries, global } = this.props;
+    const { filter } = match.params;
 
-    const { filter, name } = match.params;
-    if (EntryFilter[filter]) {
+    const name = global.hive_id;
+    if (EntryFilter[filter] && name) {
       // fetch blog posts.
       fetchEntries(filter, name, false);
     }
@@ -113,10 +114,11 @@ class CommunityPage extends BaseComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Readonly<Props>): void {
-    const { match, fetchEntries } = this.props;
+    const { match, fetchEntries, global } = this.props;
     const { match: prevMatch } = prevProps;
 
-    const { filter, name } = match.params;
+    const { filter } = match.params;
+    const name = global.hive_id;
     const { params: prevParams } = prevMatch;
 
     // community changed. fetch community and account data.
@@ -129,7 +131,7 @@ class CommunityPage extends BaseComponent<Props, State> {
       (filter !== prevParams.filter || name !== prevParams.name) &&
       EntryFilter[filter]
     ) {
-      fetchEntries(match.params.filter, match.params.name, false);
+      fetchEntries(match.params.filter, global.hive_id, false);
     }
 
     // re-fetch subscriptions once active user changed.
@@ -145,15 +147,15 @@ class CommunityPage extends BaseComponent<Props, State> {
 
   ensureData = (): Promise<void> => {
     const {
-      match,
       communities,
       addCommunity,
       accounts,
       addAccount,
       activeUser,
+      global,
     } = this.props;
 
-    const name = match.params.name;
+    const name = global.hive_id;
     const community = communities.find((x) => x.name === name);
     const account = accounts.find((x) => x.name === name);
 
@@ -180,15 +182,16 @@ class CommunityPage extends BaseComponent<Props, State> {
   };
 
   bottomReached = () => {
-    const { match, entries, fetchEntries } = this.props;
+    const { match, entries, fetchEntries, global } = this.props;
     const { search } = this.state;
-    const { filter, name } = match.params;
+    const { filter } = match.params;
+    const name = global.hive_id;
     const groupKey = makeGroupKey(filter, name);
 
     const data = entries[groupKey];
     const { loading, hasMore } = data;
 
-    if (!loading && hasMore && search.length === 0) {
+    if (!loading && hasMore && search.length === 0 && name) {
       fetchEntries(filter, name, true);
     }
   };
@@ -196,10 +199,11 @@ class CommunityPage extends BaseComponent<Props, State> {
   reload = () => {
     this.stateSet({ loading: true });
     this.ensureData().then(() => {
-      const { match, fetchEntries, invalidateEntries } = this.props;
-      const { filter, name } = match.params;
+      const { match, fetchEntries, invalidateEntries, global } = this.props;
+      const { filter } = match.params;
+      const name = global.hive_id;
 
-      if (EntryFilter[filter]) {
+      if (EntryFilter[filter] && name) {
         invalidateEntries(makeGroupKey(filter, name));
         fetchEntries(filter, name, false);
       }
