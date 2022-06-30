@@ -184,6 +184,7 @@ export class TransactionRow extends Component<TransactionRowProps> {
 interface Props {
   global: Global;
   dynamicProps: DynamicProps;
+  communities: Community[];
   history: History;
   activeUser: ActiveUser | null;
   account: Account;
@@ -200,7 +201,6 @@ interface Props {
 export const WalletEcency = (props: Props) => {
   const [claiming, setClaiming] = useState(false);
   const [purchase, setPurchase] = useState(false);
-  const [communities, setCommunities] = useState<Community[]>([]);
   const [promote, setPromote] = useState(false);
   const [boost, setBoost] = useState(false);
   const [transfer, setTransfer] = useState(false);
@@ -211,6 +211,7 @@ export const WalletEcency = (props: Props) => {
 
   const {
     global,
+    communities,
     activeUser,
     account,
     points,
@@ -225,8 +226,6 @@ export const WalletEcency = (props: Props) => {
     user = user.replace("@", "");
     global.isElectron && initiateOnElectron(user);
     getEstimatedPointsValue();
-
-    getCommunities().then((allCommunities) => setCommunities(allCommunities!));
 
     return () => {
       setIsMounted(false);
@@ -555,7 +554,7 @@ export const WalletEcency = (props: Props) => {
             </div>
           </div>
 
-          <WalletMenu global={global} username={account.name} active="ecency" />
+          <WalletMenu communities={communities} global={global} username={account.name} active="ecency" />
         </div>
 
         {transfer && (
@@ -590,6 +589,7 @@ export const WalletEcency = (props: Props) => {
 export default (p: Props) => {
   const props = {
     global: p.global,
+    communities: p.communities,
     dynamicProps: p.dynamicProps,
     history: p.history,
     activeUser: p.activeUser,

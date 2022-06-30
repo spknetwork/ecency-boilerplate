@@ -24,9 +24,11 @@ import { formatError } from "../../api/operations";
 import formattedNumber from "../../util/formatted-number";
 
 import { _t } from "../../i18n";
+import { Community } from "../../store/communities/types";
 
 interface Props {
   global: Global;
+  communities: Community[];
   dynamicProps: DynamicProps;
   account: Account;
   activeUser: ActiveUser | null;
@@ -71,12 +73,12 @@ export class WalletHiveEngine extends BaseComponent<Props, State> {
         (token) => token.balance !== 0 || token.stakedBalance !== 0
       );
       items = this.sort(items);
-      this._isMounted && this.setState({tokens: items});
-    } catch(e) { 
-      console.log('engine tokens', e);
+      this._isMounted && this.setState({ tokens: items });
+    } catch (e) {
+      console.log("engine tokens", e);
     }
-    
-    this.setState({loading: false});
+
+    this.setState({ loading: false });
   };
 
   sort = (items: HiveEngineToken[]) =>
@@ -97,10 +99,9 @@ export class WalletHiveEngine extends BaseComponent<Props, State> {
     try {
       const rewards = await getUnclaimedRewards(account.name);
       this._isMounted && this.setState({ rewards });
-    } catch(e) {
-      console.log('fetchUnclaimedRewards', e);
+    } catch (e) {
+      console.log("fetchUnclaimedRewards", e);
     }
-    
   };
 
   claimRewards = (tokens: TokenStatus[]) => {
@@ -121,7 +122,7 @@ export class WalletHiveEngine extends BaseComponent<Props, State> {
         success(_t("wallet.claim-reward-balance-ok"));
       })
       .then(() => {
-        this.setState({ rewards: []})
+        this.setState({ rewards: [] });
       })
       .catch((err) => {
         console.log(err);
@@ -133,13 +134,13 @@ export class WalletHiveEngine extends BaseComponent<Props, State> {
   };
 
   render() {
-    const { global, dynamicProps, account, activeUser } = this.props;
+    const { global, communities, account, activeUser } = this.props;
     const { rewards, tokens, loading, claiming, claimed } = this.state;
     const hasUnclaimedRewards = rewards.length > 0;
     const hasMultipleUnclaimedRewards = rewards.length > 1;
     const isMyPage = activeUser && activeUser.username === account.name;
     let rewardsToShowInTooltip = [...rewards];
-    rewardsToShowInTooltip = rewardsToShowInTooltip.splice(0,10)
+    rewardsToShowInTooltip = rewardsToShowInTooltip.splice(0, 10);
 
     if (!account.__loaded) {
       return null;
@@ -156,26 +157,35 @@ export class WalletHiveEngine extends BaseComponent<Props, State> {
                 {hasMultipleUnclaimedRewards ? (
                   <div className="rewards">
                     <span className="reward-type">
-                    <OverlayTrigger
-                            delay={{ show: 0, hide: 500 }}
-                            key={"bottom"}
-                            placement={"bottom"}
-                            overlay={
-                              <Tooltip id={`tooltip-token`}>
-                                <div className="tooltip-inner rewards-container">
-                                  {rewardsToShowInTooltip.map((reward, ind) =>
-                                  <div className="d-flex py-1 border-bottom" key={reward.pending_token+ind}>
-                                    <div className="mr-1 text-lowercase">{reward.symbol}: </div>
-                                    <div>{reward.pending_token / Math.pow(10, reward.precision)}</div>
-                                  </div>)}
+                      <OverlayTrigger
+                        delay={{ show: 0, hide: 500 }}
+                        key={"bottom"}
+                        placement={"bottom"}
+                        overlay={
+                          <Tooltip id={`tooltip-token`}>
+                            <div className="tooltip-inner rewards-container">
+                              {rewardsToShowInTooltip.map((reward, ind) => (
+                                <div
+                                  className="d-flex py-1 border-bottom"
+                                  key={reward.pending_token + ind}
+                                >
+                                  <div className="mr-1 text-lowercase">
+                                    {reward.symbol}:{" "}
+                                  </div>
+                                  <div>
+                                    {reward.pending_token /
+                                      Math.pow(10, reward.precision)}
+                                  </div>
                                 </div>
-                              </Tooltip>
-                            }
-                          >
-                            <div className="d-flex align-items-center">
-                              {`${rewards.length} tokens`}
+                              ))}
                             </div>
-                          </OverlayTrigger>
+                          </Tooltip>
+                        }
+                      >
+                        <div className="d-flex align-items-center">
+                          {`${rewards.length} tokens`}
+                        </div>
+                      </OverlayTrigger>
                     </span>
                     {isMyPage && (
                       <a
@@ -306,6 +316,7 @@ export class WalletHiveEngine extends BaseComponent<Props, State> {
             </div>
           </div>
           <WalletMenu
+            communities={communities}
             global={global}
             username={account.name}
             active="engine"
@@ -319,6 +330,7 @@ export class WalletHiveEngine extends BaseComponent<Props, State> {
 export default (p: Props) => {
   const props = {
     global: p.global,
+    communities: p.communities,
     dynamicProps: p.dynamicProps,
     account: p.account,
     activeUser: p.activeUser,

@@ -14,30 +14,14 @@ import defaults from "../../constants/defaults.json";
 
 interface Props {
   global: Global;
+  communities: Community[];
   username: string;
   active: string;
 }
 
-interface State {
-  communities: Community[];
-}
-
 export default class WalletMenu extends Component<Props> {
-  state: State = {
-    communities: [],
-  };
-
-  componentDidMount = () => {
-    if (!this.state.communities.length) {
-      getCommunities().then((communities) => {
-        this.setState({ ...this.state, communities });
-      });
-    }
-  };
-
   render() {
-    const { global, username, active } = this.props;
-    const { communities } = this.state;
+    const { global, username, active, communities } = this.props;
 
     const name = global.hive_id;
     const community = communities.find((x) => x.name === name)!;
