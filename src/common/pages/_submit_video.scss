@@ -1,0 +1,17 @@
+
+.submit_container {
+    display: flex;
+    justify-content: center;
+    padding-top: 10%;
+    width: 100%;
+
+    .content {
+        padding: 0 1rem;
+        max-width: 1120px;
+        width: 100%;
+
+        .video_input {
+            display: none;
+        }
+    }
+}

@@ -30,6 +30,7 @@ export default {
     "|"
   )}|subscribers|activities|roles)/:name(hive-[\\d]+)`,
   SUBMIT: `/submit`,
+  SUBMIT_VIDEO: `/submit/video`,
   EDIT: `/:username(@[\\w\\.\\d-]+)/:permlink/edit`,
   EDIT_DRAFT: `/draft/:draftId`,
   DISCOVER: `/discover`,

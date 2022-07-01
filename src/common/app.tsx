@@ -13,6 +13,7 @@ import SubmitContainer from "./pages/submit";
 import MarketPage from "./pages/market";
 import SignUpContainer from "./pages/sign-up";
 import NotFound from "./components/404";
+import SubmitVideoContainer from "./pages/submit_video";
 
 import Tracker from "./tracker";
 
@@ -114,6 +115,12 @@ const App = ({ setLang }: any) => {
                 strict={true}
                 path={routes.SUBMIT}
                 component={SubmitContainer}
+              />
+              <Route
+                exact={true}
+                strict={true}
+                path={routes.SUBMIT_VIDEO}
+                component={SubmitVideoContainer}
               />
               <Route
                 exact={true}

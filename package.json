@@ -66,6 +66,8 @@
     "sortablejs": "^1.13.0",
     "speakingurl": "^14.0.1",
     "styled-components": "^5.3.5",
+    "tus-js-client": "^3.0.0-0",
+    "use-tus": "^0.7.0",
     "xss": "^1.0.8"
   },
   "devDependencies": {
