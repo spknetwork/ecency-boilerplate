@@ -7,11 +7,54 @@
 
     .content {
         padding: 0 1rem;
-        max-width: 1120px;
+        max-width: 1500px;
         width: 100%;
+
+        .progress_bar {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+            border-radius: 0.5rem;
+            background-color: #1cc88a;
+            color: white;
+            text-align: center;
+        }
 
         .video_input {
             display: none;
+        }
+
+        .submit_button {
+            text-align: center;
+            background-color: #161d26;
+            color: white;
+            border-radius: 1rem;
+            border: 1px solid black;
+            padding: 2rem 0;
+            cursor: pointer;
+        }
+
+        .form_divider {
+            display: flex;
+            margin-top: 2rem;
+
+            .video_form {
+                background-color: #161d26;
+                padding: 1rem;
+                border-radius: 0.5rem;
+                border: 1px solid black;
+                margin-bottom: 5rem;
+                width: 50%;
+            }
+
+            .video_source {
+                margin-left: 1rem;
+               border-radius: 1rem;
+               width: 50%;
+
+               video {
+                   border-radius: 1rem;
+               }
+            }
         }
     }
 }

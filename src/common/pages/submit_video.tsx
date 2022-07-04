@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useRef } from "react";
+import React, { ChangeEvent, lazy, useRef, useState } from "react";
 import { connect } from "react-redux";
 import Feedback from "../components/feedback";
 import FullHeight from "../components/full-height";
@@ -8,10 +8,30 @@ import { pageMapStateToProps, pageMapDispatchToProps } from "./common";
 import * as tus from "tus-js-client";
 
 import "./_submit_video.scss";
-import { Button } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
+import { EditorToolbar } from "../components/editor-toolbar";
+import TextareaAutocomplete from "../components/textarea-autocomplete";
+import { _t } from "../i18n";
+import Dropdown from "../components/dropdown";
+
+import default_thumbnail from "../img/default-thumbnail.jpeg";
 
 const SubmitVideoContainer: React.FC<any> = (props) => {
+  const [file, setFile] = useState<string>();
+  const [progress, setProgress] = useState(0);
+  const [data, setData] = useState({
+    title: "",
+    description: "",
+    tags: [],
+    language: "",
+    payoutOption: "",
+    nfsw: false,
+    donations: false,
+    thumbnail: null,
+    scheduel: false,
+  });
   const fileRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const thumbnailRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   const handleSetUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files![0];
@@ -33,8 +53,12 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
       onProgress: (bytesUploaded, bytesTotal) => {
         var percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
         console.log(bytesUploaded, bytesTotal, percentage + "%");
+        setProgress(+percentage);
       },
-      onSuccess: () => {},
+      onSuccess: () => {
+        const url = URL.createObjectURL(file);
+        setFile(url);
+      },
     });
 
     upload.findPreviousUploads().then((previousUploads) => {
@@ -46,8 +70,8 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
     });
   };
 
-  const startUpload = () => {
-    fileRef.current.click();
+  const onSubmit = () => {
+    console.log(data);
   };
 
   return (
@@ -58,6 +82,11 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
       <NavBar {...props} />
       <div className="submit_container">
         <div className="content">
+          {!!progress && (
+            <div className="progress_bar" style={{ width: `${progress}%` }}>
+              Video upload progress ({progress.toFixed(2)}%)
+            </div>
+          )}
           <input
             ref={fileRef}
             className="video_input"
@@ -65,7 +94,181 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
             onChange={handleSetUpload}
             accept=".mov,.mp4"
           />
-          <Button onClick={startUpload}>Choose a video to upload</Button>
+          <div
+            className="submit_button"
+            onClick={() => fileRef.current.click()}
+          >
+            Choose a video to upload
+          </div>
+          <div className="form_divider">
+            <Form className="video_form">
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Title</Form.Label>
+                <Form.Control
+                  onChange={(e) => setData({ ...data, title: e.target.value })}
+                  type="text"
+                  placeholder="Enter title"
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Description</Form.Label>
+                <EditorToolbar {...props} />
+                <TextareaAutocomplete
+                  acceptCharset="UTF-8"
+                  global={props.global}
+                  id="the-editor"
+                  className="the-editor accepts-emoji form-control"
+                  as="textarea"
+                  placeholder={_t("submit.body-placeholder")}
+                  value={data.description}
+                  onChange={(value: any) => console.log(value)}
+                  minrows={10}
+                  maxrows={100}
+                  spellCheck={true}
+                  activeUser={
+                    (props.activeUser && props.activeUser.username) || ""
+                  }
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Tags</Form.Label>
+                <Form.Control
+                  onChange={(e) =>
+                    setData({ ...data, tags: e.target.value.split(",") as any })
+                  }
+                  type="text"
+                  placeholder="tag1,tag2"
+                />
+              </Form.Group>
+              <Form.Group className="mb-4" controlId="formBasicEmail">
+                <Form.Label />
+                <Dropdown
+                  history={null}
+                  float={"left"}
+                  label={"Language"}
+                  items={[
+                    {
+                      label: "English",
+                    },
+                    {
+                      label: "Deutch",
+                    },
+                  ]}
+                />
+              </Form.Group>
+              <Form.Group className="mb-4" controlId="formBasicEmail">
+                <Form.Label />
+                <Dropdown
+                  history={null}
+                  float={"left"}
+                  label={"Payout options"}
+                  items={[
+                    {
+                      label: "Standard (50% liquid, 50% staked)",
+                    },
+                    {
+                      label: "100% powerup (100% staked)",
+                    },
+                    {
+                      label: "Decline rewards",
+                    },
+                  ]}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                <Form.Check
+                  type="checkbox"
+                  checked={data.nfsw}
+                  label="Content is graphic and/or NSFW"
+                  onChange={() => setData({ ...data, nfsw: !data.nfsw })}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                <Form.Check
+                  type="checkbox"
+                  checked={data.donations}
+                  onChange={() =>
+                    setData({ ...data, donations: !data.donations })
+                  }
+                  label="Would you like to receive crypto donations on this video?"
+                />
+              </Form.Group>
+              <Form.Group
+                className="mb-3"
+                style={{ display: "block" }}
+                controlId="formBasicEmail"
+              >
+                <Form.Label>Thumbnail</Form.Label>
+                <input
+                  ref={thumbnailRef}
+                  className="video_input"
+                  type="file"
+                  onChange={(e) =>
+                    e.target.files
+                      ? setData({
+                          ...data,
+                          thumbnail: URL.createObjectURL(
+                            e.target.files[0]
+                          ) as any,
+                        })
+                      : {}
+                  }
+                  accept=".jpeg,.png"
+                />
+                <Form.Group
+                  onClick={() => {
+                    thumbnailRef.current.click();
+                  }}
+                >
+                  <img
+                    src={data.thumbnail ? data.thumbnail : default_thumbnail}
+                    style={{
+                      maxWidth: "200px",
+                      cursor: "pointer",
+                      width: "100%",
+                    }}
+                    alt=""
+                    id="thumbnail"
+                  />
+                </Form.Group>
+                <Form.Text>Click to change thumbnail</Form.Text>
+              </Form.Group>
+              <Form.Group
+                className="mb-3"
+                style={{ display: "block" }}
+                controlId="formBasicEmail"
+              >
+                <Form.Label>Publishing settings</Form.Label>
+                <Form.Check
+                  type="radio"
+                  className="mb-2"
+                  name="group1"
+                  onSelect={() => setData({ ...data, scheduel: false })}
+                  label="Publish Video after Encoding"
+                />
+                <Form.Check
+                  type="radio"
+                  name="group1"
+                  onSelect={() => setData({ ...data, scheduel: true })}
+                  label="Schedule Video for a later date"
+                />
+              </Form.Group>
+              <Button variant="primary" onClick={onSubmit}>
+                Submit
+              </Button>
+            </Form>
+            {file && (
+              <div className="video_source">
+                <video
+                  className="VideoInput_video"
+                  width="100%"
+                  controls
+                  src={file}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>
