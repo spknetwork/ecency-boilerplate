@@ -6,7 +6,9 @@ import { NavBar } from "../components/navbar";
 import Theme from "../components/theme";
 import { pageMapStateToProps, pageMapDispatchToProps } from "./common";
 import * as tus from "tus-js-client";
+import DatePicker from "react-datepicker";
 
+import "react-datepicker/dist/react-datepicker.css";
 import "./_submit_video.scss";
 import { Form, Button } from "react-bootstrap";
 import { EditorToolbar } from "../components/editor-toolbar";
@@ -15,6 +17,7 @@ import { _t } from "../i18n";
 import Dropdown from "../components/dropdown";
 
 import default_thumbnail from "../img/default-thumbnail.jpeg";
+import axios from "axios";
 
 const SubmitVideoContainer: React.FC<any> = (props) => {
   const [file, setFile] = useState<string>();
@@ -29,6 +32,7 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
     donations: false,
     thumbnail: null,
     scheduel: false,
+    date: "",
   });
   const fileRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const thumbnailRef = useRef() as React.MutableRefObject<HTMLInputElement>;
@@ -52,11 +56,23 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
       },
       onProgress: (bytesUploaded, bytesTotal) => {
         var percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
-        console.log(bytesUploaded, bytesTotal, percentage + "%");
         setProgress(+percentage);
       },
       onSuccess: () => {
         const url = URL.createObjectURL(file);
+        const media = new Audio(url);
+        media.onloadedmetadata = () => {
+          axios
+            .post("https://3speak.tv/apiv2/upload/prepare", {
+              oFilename: file.name,
+              duration: +media.duration,
+              size: file.size,
+            })
+            .then((r) => {
+              console.log(r);
+            });
+        };
+
         setFile(url);
       },
     });
@@ -114,15 +130,16 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Description</Form.Label>
                 <EditorToolbar {...props} />
-                <TextareaAutocomplete
-                  acceptCharset="UTF-8"
+                <Form.Control
                   global={props.global}
                   id="the-editor"
                   className="the-editor accepts-emoji form-control"
                   as="textarea"
                   placeholder={_t("submit.body-placeholder")}
                   value={data.description}
-                  onChange={(value: any) => console.log(value)}
+                  onChange={(e) =>
+                    setData({ ...data, description: e.target.value })
+                  }
                   minrows={10}
                   maxrows={100}
                   spellCheck={true}
@@ -150,9 +167,11 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
                   items={[
                     {
                       label: "English",
+                      onClick: () => setData({ ...data, language: "english" }),
                     },
                     {
                       label: "Deutch",
+                      onClick: () => setData({ ...data, language: "deutch" }),
                     },
                   ]}
                 />
@@ -166,12 +185,18 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
                   items={[
                     {
                       label: "Standard (50% liquid, 50% staked)",
+                      onClick: () =>
+                        setData({ ...data, payoutOption: "standard" }),
                     },
                     {
                       label: "100% powerup (100% staked)",
+                      onClick: () =>
+                        setData({ ...data, payoutOption: "powerup" }),
                     },
                     {
                       label: "Decline rewards",
+                      onClick: () =>
+                        setData({ ...data, payoutOption: "no_reward" }),
                     },
                   ]}
                 />
@@ -244,16 +269,26 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
                   type="radio"
                   className="mb-2"
                   name="group1"
-                  onSelect={() => setData({ ...data, scheduel: false })}
+                  onChange={() => setData({ ...data, scheduel: false })}
                   label="Publish Video after Encoding"
                 />
                 <Form.Check
                   type="radio"
                   name="group1"
-                  onSelect={() => setData({ ...data, scheduel: true })}
+                  onChange={() => setData({ ...data, scheduel: true })}
                   label="Schedule Video for a later date"
                 />
               </Form.Group>
+              {data.scheduel && (
+                <DatePicker
+                  className="mb-3"
+                  placeholderText="Input post date"
+                  value={data.date}
+                  onChange={(value) =>
+                    setData({ ...data, date: value?.toDateString()! })
+                  }
+                />
+              )}
               <Button variant="primary" onClick={onSubmit}>
                 Submit
               </Button>

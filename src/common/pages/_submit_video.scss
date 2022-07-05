@@ -37,6 +37,11 @@
             display: flex;
             margin-top: 2rem;
 
+            @media (max-width: 767px) {
+                flex-direction: column;
+                margin-top: 1rem;
+            }
+
             .video_form {
                 background-color: #161d26;
                 padding: 1rem;
@@ -44,12 +49,23 @@
                 border: 1px solid black;
                 margin-bottom: 5rem;
                 width: 50%;
+
+                @media (max-width: 767px) {
+                    width: 100%;
+                    margin-bottom: 2rem;
+                }
             }
 
             .video_source {
-                margin-left: 1rem;
+               margin-left: 1rem;
                border-radius: 1rem;
                width: 50%;
+
+                @media (max-width: 767px) {
+                    width: 100%;
+                    margin-bottom: 3rem;
+                    margin-left: 0px;
+                }
 
                video {
                    border-radius: 1rem;
