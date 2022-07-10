@@ -63,7 +63,7 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
         const media = new Audio(url);
         media.onloadedmetadata = () => {
           axios
-            .post("https://3speak.tv/apiv2/upload/prepare", {
+            .post("https://studio.3speak.tv/apiv2/upload/prepare", {
               oFilename: file.name,
               duration: +media.duration,
               size: file.size,
