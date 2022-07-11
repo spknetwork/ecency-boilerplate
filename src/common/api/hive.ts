@@ -484,3 +484,30 @@ export const getBlogEntries = (username: string, limit: number = dataLimit): Pro
         0,
         limit
     ]);
+
+export const login = async (username: string, token: string) => {
+    return new Promise((res, rej) => {
+        // @ts-ignore
+        if (window.hive_keychain) {
+            const buf = JSON.stringify(
+                {
+                    token,
+                },
+                null,
+                0
+            );
+
+            // @ts-ignore
+            window.hive_keychain.requestVerifyKey(
+                username,
+                token,
+                "Posting",
+                (response: any) => {
+                    res(response);
+                }
+            );
+        } else {
+            rej("Hive keychain needs to be present");
+        }
+    });
+};

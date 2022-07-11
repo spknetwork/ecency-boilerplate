@@ -1,4 +1,4 @@
-import React, { ChangeEvent, lazy, useRef, useState } from "react";
+import React, { ChangeEvent, lazy, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import Feedback from "../components/feedback";
 import FullHeight from "../components/full-height";
@@ -18,6 +18,7 @@ import Dropdown from "../components/dropdown";
 
 import default_thumbnail from "../img/default-thumbnail.jpeg";
 import axios from "axios";
+import { login } from "../api/hive";
 
 const SubmitVideoContainer: React.FC<any> = (props) => {
   const [file, setFile] = useState<string>();
@@ -90,6 +91,19 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
     console.log(data);
   };
 
+  useEffect(() => {
+    axios
+      .get(
+        `https://studio.3speak.tv/apiv2/login?username=${props.activeUser.username}`
+      )
+      .then(({ data }) => {
+        console.log(data);
+        login(props.activeUser.username, "#SOMETHING_HERE").then((r) => {
+          console.log(r);
+        });
+      });
+  }, []);
+
   return (
     <>
       <FullHeight />
@@ -115,6 +129,8 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
             onClick={() => fileRef.current.click()}
           >
             Choose a video to upload
+            <br />
+            Max file size is <b>5 MB</b>
           </div>
           <div className="form_divider">
             <Form className="video_form">
@@ -131,7 +147,6 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
                 <Form.Label>Description</Form.Label>
                 <EditorToolbar {...props} />
                 <Form.Control
-                  global={props.global}
                   id="the-editor"
                   className="the-editor accepts-emoji form-control"
                   as="textarea"
@@ -140,12 +155,8 @@ const SubmitVideoContainer: React.FC<any> = (props) => {
                   onChange={(e) =>
                     setData({ ...data, description: e.target.value })
                   }
-                  minrows={10}
-                  maxrows={100}
+                  rows={10}
                   spellCheck={true}
-                  activeUser={
-                    (props.activeUser && props.activeUser.username) || ""
-                  }
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicEmail">
