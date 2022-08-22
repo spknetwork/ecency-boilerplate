@@ -43,6 +43,7 @@ import _c from "../../util/fix-class-names";
 
 import {deleteForeverSvg} from "../../img/svg";
 import { setupConfig } from "../../../setup";
+import { useAccountContext } from "../../util/userContext";
 
 declare var window: AppWindow;
 
@@ -303,6 +304,12 @@ export class Login extends BaseComponent<LoginProps, State> {
     key: "",
     inProgress: false,
   };
+
+  ceramicLogin() {
+    console.log(
+      "LOGGING IN WITH CERAMIC, for now it's still written using hooks, so can't use it here"
+    );
+  }
 
   shouldComponentUpdate(
     nextProps: Readonly<LoginProps>,
@@ -646,9 +653,26 @@ export class Login extends BaseComponent<LoginProps, State> {
             {_t("login.with-hive-signer")}
           </a>
         </div>
+        <div className="hs-login">
+          <a
+            style={{ width: "200px" }}
+            className={_c(
+              `btn btn-outline-primary ${inProgress ? "disabled" : ""}`
+            )}
+            onClick={this.ceramicLogin}
+          >
+            <img
+              src="https://assets.website-files.com/609ab8eae6dd417c085cc925/609b2ba76d637745d781160e_logo-ceramic-p-500.png"
+              className="hs-logo"
+              alt="hivesigner"
+            />{" "}
+            Login with Ceramic
+          </a>
+        </div>
         {global.hasKeyChain && (
           <div className="kc-login">
             <a
+              style={{ width: "200px" }}
               className={_c(
                 `btn btn-outline-primary ${inProgress ? "disabled" : ""}`
               )}
