@@ -69,18 +69,18 @@ class AccountContextClass {
 
     const authId = `hive:${username}`;
     const authSecret = normalizeAuthSecret(
-      hash(Buffer.from(loginResult.result))
+      hash(Buffer.from(loginResult.result)) as any
     );
     const did = await this.createIdentity({ authId, authSecret });
     // log the DID
     this.storeAuth({ authId, authSecret });
     this.hiveName = authId;
 
-    const accountInfo = (await DHive.database.getAccounts([username]))[0];
+    const accountInfo: any = (await DHive.database.getAccounts([username]))[0];
     let json_meatadata = JSON.parse(accountInfo.posting_json_metadata);
     if (!json_meatadata?.did) {
       json_meatadata.did = did.id;
-      window.hive_keychain.requestBroadcast(
+      (window as any).hive_keychain.requestBroadcast(
         username,
         [
           [
