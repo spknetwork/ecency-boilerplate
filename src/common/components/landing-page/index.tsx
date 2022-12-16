@@ -25,7 +25,7 @@ const LandingPage = (props: any) => {
   }, []);
 
   return activeUser || (community && !time) ? (
-    <Redirect to={`/trending/${global.hive_id}`} />
+    <Redirect to={`/trending`} />
   ) : (
     <div
       className={global.isElectron ? "landing-wrapper pt-5" : "landing-wrapper"}

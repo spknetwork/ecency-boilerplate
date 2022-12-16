@@ -141,7 +141,6 @@ export const fetchEntries = (what: string = "", tag: string = "", more: boolean 
 ) => {
     const {entries, activeUser} = getState();
     const pageSize = dataLimit;
-
     const groupKey = makeGroupKey(what, tag);
 
     const theEntries = entries[groupKey].entries;

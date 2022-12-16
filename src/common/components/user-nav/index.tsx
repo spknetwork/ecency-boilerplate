@@ -217,36 +217,46 @@ export default class UserNav extends Component<Props, State> {
         };
 
         return (
-            <>
-                <div className="user-nav">
-                    {/* <PointsBadge activeUser={activeUser} /> */}
+          <>
+            <div className="user-nav">
+              <PointsBadge activeUser={activeUser} />
+              <WalletBadge
+                activeUser={activeUser}
+                dynamicProps={dynamicProps}
+              />
+              <ToolTip content={_t("user-nav.notifications")}>
+                <span
+                  className="notifications"
+                  onClick={this.toggleNotifications}
+                >
+                  {unread > 0 && (
+                    <span className="notifications-badge notranslate">
+                      {unread.toString().length < 3 ? unread : "..."}
+                    </span>
+                  )}
+                  {global.notifications ? bellSvg : bellOffSvg}
+                </span>
+              </ToolTip>
 
-                    <WalletBadge activeUser={activeUser} dynamicProps={dynamicProps}/>
-
-                    <ToolTip content={_t("user-nav.notifications")}>
-                        <span className="notifications" onClick={this.toggleNotifications}>
-                             {unread > 0 && (
-                                 <span className="notifications-badge notranslate">
-                                     {unread.toString().length < 3 ? unread : '...'}
-                                 </span>
-                             )}
-                            {global.notifications ? bellSvg : bellOffSvg}
-                        </span>
-                    </ToolTip>
-
-                    <DropDown
-                        {...dropDownConfig}
-                        float="right"
-                        header={`@${activeUser.username}`}
-                    />
-                </div>
-                {ui.notifications && <UserNotifications {...this.props} />}
-                {gallery && <Gallery {...this.props} onHide={this.toggleGallery}/>}
-                {drafts && <Drafts {...this.props} onHide={this.toggleDrafts}/>}
-                {bookmarks && <Bookmarks {...this.props} onHide={this.toggleBookmarks}/>}
-                {schedules && <Schedules {...this.props} onHide={this.toggleSchedules}/>}
-                {fragments && <Fragments {...this.props} onHide={this.toggleFragments}/>}
-            </>
+              <DropDown
+                {...dropDownConfig}
+                float="right"
+                header={`@${activeUser.username}`}
+              />
+            </div>
+            {ui.notifications && <UserNotifications {...this.props} />}
+            {gallery && <Gallery {...this.props} onHide={this.toggleGallery} />}
+            {drafts && <Drafts {...this.props} onHide={this.toggleDrafts} />}
+            {bookmarks && (
+              <Bookmarks {...this.props} onHide={this.toggleBookmarks} />
+            )}
+            {schedules && (
+              <Schedules {...this.props} onHide={this.toggleSchedules} />
+            )}
+            {fragments && (
+              <Fragments {...this.props} onHide={this.toggleFragments} />
+            )}
+          </>
         );
     }
 }

@@ -37,8 +37,9 @@ export class CommunityMenu extends Component<Props> {
     }
 
     render() {
-        const {community, match} = this.props;
-        const {filter, name} = match.params;
+        const { community, match, global } = this.props;
+        const { filter } = match.params;
+        const name = global.hive_id;
 
         const menuConfig: {
             history: History,

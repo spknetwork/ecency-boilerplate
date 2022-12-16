@@ -383,99 +383,140 @@ export class NavBar extends Component<Props, State> {
     render() {
         const {global, activeUser, history, location, ui, step, match} = this.props;        
         const themeText = global.theme == Theme.day ? _t("navbar.night-theme") : _t("navbar.day-theme");
-        const communityPage = match && match.params.name && isCommunity(match.params.name)
-        const tagValue = global.tag ? `/${global.tag}` : ''
-        const logoHref = activeUser ? 
-        (communityPage || ((global.tag.includes('@')) && (['engine','wallet','points','communities','settings','permissions','comments','replies','blog', 'posts'].includes(global.filter)))) ?
-        '/hot' : 
-        global.filter === 'feed' ? `${tagValue}/${global.filter}` : `/${global.filter}${tagValue}` 
-        : '/';
+        const communityPage =
+          match && global.hive_id && isCommunity(global.hive_id);
+        const tagValue = global.tag ? `/${global.tag}` : "";
+        const logoHref = activeUser
+          ? communityPage ||
+            (global.tag.includes("@") &&
+              [
+                "engine",
+                "wallet",
+                "points",
+                "communities",
+                "settings",
+                "permissions",
+                "comments",
+                "replies",
+                "blog",
+                "posts",
+              ].includes(global.filter))
+            ? "/hot"
+            : global.filter === "feed"
+            ? `${tagValue}/${global.filter}`
+            : `/${global.filter}${tagValue}`
+          : "/";
 
-        const {floating} = this.state;
+        const { floating } = this.state;
 
         const textMenuConfig = {
-            history: this.props.history,
-            label: '',
-            icon: dotsHorizontal,
-            items: [
-                {
-                    label: _t("navbar.discover"),
-                    href: `/discover`,
-                    active: location.pathname === '/discover'
-                },
-                {
-                    label: _t("navbar.communities"),
-                    href: `/communities`,
-                    active: location.pathname === '/communities'
-                }
-            ],
-            postElem: <div className="drop-down-menu-version">Ecency Surfer {version}</div>
+          history: this.props.history,
+          label: "",
+          icon: dotsHorizontal,
+          items: [
+            {
+              label: _t("navbar.discover"),
+              href: `/discover`,
+              active: location.pathname === "/discover",
+            },
+            {
+              label: _t("navbar.communities"),
+              href: `/communities`,
+              active: location.pathname === "/communities",
+            },
+          ],
+          postElem: (
+            <div className="drop-down-menu-version">
+              Ecency Surfer {version}
+            </div>
+          ),
         };
-        let noMargin = step && step === 1
-        
+        let noMargin = step && step === 1;
+
         return (
-            <>
-                {floating && (<div className="nav-bar-electron-rep"/>)}
-                <div ref={this.nav} className={_c(`nav-bar-electron ${noMargin ? "mb-0" : "" }`)}>
-                    <div className="nav-bar-inner">
-                        <div className="brand">
-                            <Link to={logoHref}>
-                                <img src={logo} className="logo" alt="Logo"/>
-                            </Link>
-                        </div>
-
-                        <div className="nav-controls">
-                            <NavControls
-                                history={history}
-                                location={location}
-                                reloading={this.props.reloading}
-                                reloadFn={this.props.reloadFn}/>
-                        </div>
-
-                        <div className="address-bar">
-                            <AddressBar history={history} location={location} global={global} trendingTags={this.props.trendingTags}/>
-                        </div>
-
-                        <div className="text-menu">
-                            <DropDown {...textMenuConfig} float="right"/>
-                        </div>
-
-                        {SwitchLang({...this.props})}
-
-                        <ToolTip content={themeText}>
-                            <div className="switch-theme" onClick={this.changeTheme}>
-                                {brightnessSvg}
-                            </div>
-                        </ToolTip>
-
-                        {!activeUser && (
-                            <div className="login-required">
-                                <Button variant="outline-primary" onClick={() => {
-                                    const {toggleUIProp} = this.props;
-                                    toggleUIProp('login');
-                                }}>{_t("g.login")}</Button>
-
-                                <Link className="btn btn-primary" to="/signup">{_t("g.signup")}</Link>
-                            </div>
-                        )}
-
-                        <div className="submit-post">
-                            <ToolTip content={_t("navbar.post")}>
-                                <Link className="btn btn-outline-primary" to="/submit">
-                                    {pencilOutlineSvg}
-                                </Link>
-                            </ToolTip>
-                        </div>
-
-                        {activeUser && <UserNav {...this.props} activeUser={activeUser}/>}
-                    </div>
-
-                    {ui.login && <Login {...this.props} />}
-                    {global.usePrivate && <NotificationHandler {...this.props} />}
+          <>
+            {floating && <div className="nav-bar-electron-rep" />}
+            <div
+              ref={this.nav}
+              className={_c(`nav-bar-electron ${noMargin ? "mb-0" : ""}`)}
+            >
+              <div className="nav-bar-inner">
+                <div className="brand">
+                  <Link to={logoHref}>
+                    <img src={logo} className="logo" alt="Logo" />
+                  </Link>
                 </div>
-                {global.newVersion && <Updater global={global} dismissNewVersion={this.props.dismissNewVersion}/>}
-            </>
-        )
+                <div className="nav-controls">
+                  <NavControls
+                    history={history}
+                    location={location}
+                    reloading={this.props.reloading}
+                    reloadFn={this.props.reloadFn}
+                  />
+                </div>
+                <div className="address-bar">
+                  <AddressBar
+                    history={history}
+                    location={location}
+                    global={global}
+                    trendingTags={this.props.trendingTags}
+                  />
+                </div>
+
+                <div className="text-menu">
+                  <DropDown {...textMenuConfig} float="right" />
+                </div>
+
+                {SwitchLang({ ...this.props })}
+
+                <ToolTip content={themeText}>
+                  <div className="switch-theme" onClick={this.changeTheme}>
+                    {brightnessSvg}
+                  </div>
+                </ToolTip>
+
+                {!activeUser && (
+                  <div className="login-required">
+                    <Button
+                      variant="outline-primary"
+                      onClick={() => {
+                        const { toggleUIProp } = this.props;
+                        toggleUIProp("login");
+                      }}
+                    >
+                      {_t("g.login")}
+                    </Button>
+
+                    <Link className="btn btn-primary" to="/signup">
+                      {_t("g.signup")}
+                    </Link>
+                  </div>
+                )}
+
+                <div className="submit-post">
+                  <ToolTip content={_t("navbar.post")}>
+                    <Link className="btn btn-outline-primary" to="/submit">
+                      {pencilOutlineSvg}
+                    </Link>
+                  </ToolTip>
+                </div>
+
+                {activeUser && (
+                  <UserNav {...this.props} activeUser={activeUser} />
+                )}
+              </div>
+
+              {ui.login && <Login {...this.props} />}
+              {global.usePrivate && <NotificationHandler {...this.props} />}
+            </div>
+            {global.newVersion && (
+              <Updater
+                global={global}
+                dismissNewVersion={this.props.dismissNewVersion}
+              />
+            )}
+          </>
+        );
     }
 }
 

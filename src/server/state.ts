@@ -48,7 +48,7 @@ export const makePreloadedState = async (
         getOperatingSystem(req.headers["user-agent"])
       )
     ),
-    usePrivate: false,
+    usePrivate: true,
     hive_id: config.hive_id,
     ctheme: config.theme,
     tags: [...config.tags],
