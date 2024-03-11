@@ -96,11 +96,12 @@ class CommunityPage extends BaseComponent<Props, State> {
   async componentDidMount() {
     await this.ensureData();
     const { match, fetchEntries } = this.props;
+    const tags = this.props.global.tags;
 
     const { filter, name } = match.params;
     if (EntryFilter[filter as EntryFilter]) {
       // fetch blog posts.
-      fetchEntries(filter, name, false);
+      fetchEntries(filter, [name, ...tags], false);
     }
 
     // fetch subscriptions.
