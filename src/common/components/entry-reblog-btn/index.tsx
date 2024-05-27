@@ -22,7 +22,7 @@ import _c from "../../util/fix-class-names";
 import {repeatSvg} from "../../img/svg";
 import { updateUserPoints } from "../../api/breakaway";
 import { Global } from "../../store/global/types";
-import { getCommunity } from "../../api/bridge";
+// import { getCommunity } from "../../api/bridge";
 
 interface Props {
     entry: Entry;
@@ -42,13 +42,11 @@ interface Props {
 
 interface State {
     inProgress: boolean;
-    communityData: any
 }
 
 export class EntryReblogBtn extends BaseComponent<Props> {
     state: State = {
         inProgress: false,
-        communityData: {}
     };
 
     componentDidMount() {
@@ -59,7 +57,6 @@ export class EntryReblogBtn extends BaseComponent<Props> {
             // Otherwise condenser_api.get_blog_entries will be called 2 times on page load.
             setTimeout(fetchReblogs, 500);
         }
-        this.getCurrentCommunity()
     }
 
     componentDidUpdate(prevProps: Readonly<Props>) {
@@ -70,14 +67,13 @@ export class EntryReblogBtn extends BaseComponent<Props> {
     }
 
     reblog = () => {
-        const {entry, activeUser, addReblog} = this.props;
-        const { communityData } = this.state;
+        const {entry, activeUser, addReblog, global} = this.props;
 
         this.stateSet({inProgress: true});
         reblog(activeUser?.username!, entry.author, entry.permlink)
             .then(async () => {
                 addReblog(entry.author, entry.permlink);
-                const baResponse = await updateUserPoints(activeUser!.username, communityData.title, "reblog")
+                const baResponse = await updateUserPoints(activeUser!.username, global.communityTitle, "reblog")
                 success(_t("entry-reblog.success"));
             })
             .catch((e) => {
@@ -104,14 +100,6 @@ export class EntryReblogBtn extends BaseComponent<Props> {
                 this.stateSet({inProgress: false});
             });
     }
-
-    getCurrentCommunity = async () => {
-        const communityId = this.props.global.hive_id
-        const community = await getCommunity(communityId);
-        if (community) {
-          this.setState({communityData: community})
-        }
-      }
 
     render() {
         const {activeUser, entry, reblogs} = this.props;

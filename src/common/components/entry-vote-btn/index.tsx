@@ -28,7 +28,6 @@ import { chevronDownSvgForSlider, chevronUpSvgForSlider, chevronUpSvgForVote } f
 import ClickAwayListener from "../clickaway-listener";
 import { _t } from "../../i18n";
 import { updateUserPoints } from "../../api/breakaway";
-import { getCommunity } from "../../api/bridge";
 
 const setVoteValue = (type: "up" | "down" | "downPrevious" | "upPrevious", username: string, value: number) => {
   ls.set(`vote-value-${type}-${username}`, value);
@@ -365,23 +364,20 @@ interface Props {
 interface State {
   dialog: boolean;
   inProgress: boolean;
-  communityData: any
 }
 
 export class EntryVoteBtn extends BaseComponent<Props, State> {
   state: State = {
     dialog: false,
     inProgress: false,
-    communityData: {}
   };
 
   componentDidMount(): void {
-    
-    this.getCommunityInfo()
+    console.log(this.props.global)
 }
 
   vote = (percent: number, estimated: number) => {
-    const { communityData } = this.state;
+    const { global } = this.props;
     this.toggleDialog();
 
     const { entry, activeUser, afterVote, updateActiveUser } = this.props;
@@ -400,7 +396,7 @@ export class EntryVoteBtn extends BaseComponent<Props, State> {
         afterVote(votes, estimated);
         updateActiveUser(); // refresh voting power
 
-        const baResponse = await updateUserPoints(activeUser!.username, communityData.title, "upvote")
+        const baResponse = await updateUserPoints(activeUser!.username, global.communityTitle, "upvote")
       })
       .catch((e) => {
         error(formatError(e));
@@ -438,11 +434,6 @@ export class EntryVoteBtn extends BaseComponent<Props, State> {
   handleClickAway = () => {
     this.stateSet({ dialog: false });
   };
-
-  getCommunityInfo = async () => {
-    const communityData = await getCommunity(this.props.global.hive_id)
-    this.setState({communityData})
-  }
 
   render() {
     const { activeUser } = this.props;

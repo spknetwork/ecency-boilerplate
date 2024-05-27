@@ -74,7 +74,6 @@ interface State {
     text: string,
     preview: string,
     showEmoji: boolean,
-    communityData: any,
 }
 
 export class Comment extends Component<Props, State> {
@@ -82,7 +81,6 @@ export class Comment extends Component<Props, State> {
         text: '',
         preview: '',
         showEmoji: false,
-        communityData: {}
     }
 
     _updateTimer: any = null;
@@ -90,7 +88,6 @@ export class Comment extends Component<Props, State> {
     componentDidMount(): void {
         const {defText} = this.props;
         this.setState({text: defText || "", preview: defText || ""});
-        this.getCommunityInfo()
     }
 
     componentDidUpdate(prevProps: Readonly<Props>): void {
@@ -133,11 +130,11 @@ export class Comment extends Component<Props, State> {
     };
 
     submit = async () => {
-        const {text, communityData} = this.state;
-        const {onSubmit, activeUser} = this.props;
+        const {text} = this.state;
+        const {onSubmit, activeUser, global} = this.props;
         try {            
             onSubmit(text);
-            const res = await updateUserPoints(activeUser!.username, communityData.title, "comments")
+            const res = await updateUserPoints(activeUser!.username, global.communityTitle, "comments")
         } catch (error) {
             
         }
@@ -147,11 +144,6 @@ export class Comment extends Component<Props, State> {
         const {onCancel} = this.props;
         if (onCancel) onCancel();
     }
-
-    getCommunityInfo = async () => {
-        const communityData = await getCommunity(this.props.global.hive_id)
-        this.setState({communityData})
-      }
 
     render() {
         const {inProgress, cancellable, autoFocus, submitText, inputRef} = this.props;

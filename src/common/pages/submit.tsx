@@ -72,7 +72,6 @@ import TextareaAutocomplete from "../components/textarea-autocomplete";
 import { ThreeSpeakManager } from "../util/ThreeSpeakProvider";
 import { updateUserPoints } from "../api/breakaway";
 import { useThreeSpeakManager } from "../util/ThreeSpeakProvider";
-import { getCommunity } from "../api/bridge";
 
 interface PostBase {
     title: string;
@@ -155,7 +154,6 @@ interface State extends PostBase, Advanced {
     thumbnails: string[];
     selectedThumbnail: string;
     selectionTouched: boolean;
-    communityData: any;
 }
 
 class SubmitPage extends BaseComponent<Props, State> {
@@ -184,7 +182,6 @@ class SubmitPage extends BaseComponent<Props, State> {
         disabled: true,
         spkPermlink: "",
         isThreeSpeak: false,
-        communityData: {}
     };
 
     _updateTimer: any = null;
@@ -205,7 +202,6 @@ class SubmitPage extends BaseComponent<Props, State> {
         if(selectedThumbnail && selectedThumbnail.length > 0){
             this.selectThumbnails(selectedThumbnail)
         }
-        this.getCommunityInfo();
     };
 
     componentDidUpdate(prevProps: Readonly<Props>) {
@@ -526,8 +522,8 @@ class SubmitPage extends BaseComponent<Props, State> {
             return;
         }
 
-        const {activeUser, history, addEntry} = this.props;
-        const {title, tags, body, reward, reblogSwitch, beneficiaries, selectedThumbnail, selectionTouched, communityData} = this.state;
+        const {activeUser, history, addEntry, global} = this.props;
+        const {title, tags, body, reward, reblogSwitch, beneficiaries, selectedThumbnail, selectionTouched} = this.state;
         // make sure active user fully loaded
         if (!activeUser || !activeUser.data.__loaded) {
             return;
@@ -603,7 +599,7 @@ class SubmitPage extends BaseComponent<Props, State> {
                     percent_hbd: options.percent_hbd
                 };
                 addEntry(entry);
-                const baResponse = await updateUserPoints(activeUser!.username, communityData.title, "posts");
+                const baResponse = await updateUserPoints(activeUser!.username, global.communityTitle, "posts");
 
                 success(_t("submit.published"));
                 this.clear();
@@ -789,13 +785,7 @@ class SubmitPage extends BaseComponent<Props, State> {
         this.setState(
             {isThreeSpeak: true, spkPermlink: p}, 
             )
-        console.log(this.state.isThreeSpeak)
-        console.log("spkPermlink",this.state.spkPermlink)
     }
-    getCommunityInfo = async () => {
-        const communityData = await getCommunity(this.props.global.hive_id)
-        this.setState({communityData})
-      }
 
     render() {
         const {title, tags, body, reward, preview, posting, editingEntry, saving, editingDraft, advanced, beneficiaries, schedule, reblogSwitch, clearModal, selectedThumbnail, thumbnails, disabled} = this.state;
