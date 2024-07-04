@@ -600,6 +600,9 @@ export class Login extends BaseComponent<LoginProps, State> {
     const keyChainLogo = global.isElectron
       ? "./img/keychain.png"
       : require("../../img/keychain.png");
+    const hiveAuthLogo = global.isElectron
+      ? "./img/hive-auth.jpeg"
+      : require("../../img/hive-auth.jpeg");
 
     const spinner = (
       <Spinner
@@ -639,80 +642,80 @@ export class Login extends BaseComponent<LoginProps, State> {
                 })}
               </div>
             </div>
-            {/* <OrDivider /> */}
           </>
         )}
 
-        {/* <Form
-          className="login-form"
-          onSubmit={(e: React.FormEvent) => {
-            e.preventDefault();
-          }}
-        >
-          <p className="login-form-text">{_t("login.with-user-pass")}</p>
-          <Form.Group>
-            <Form.Control
-              type="text"
-              value={username}
-              onChange={this.usernameChanged}
-              placeholder={_t("login.username-placeholder")}
-              autoFocus={true}
-              onKeyDown={this.inputKeyDown}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Control
-              type="password"
-              value={key}
-              autoComplete="off"
-              onChange={this.keyChanged}
-              placeholder={_t("login.key-placeholder")}
-              onKeyDown={this.inputKeyDown}
-            />
-          </Form.Group>
-          <p className="login-form-text">
-            {_t("login.login-info-1")}{" "}
-            <a href="https://starterkit.tech/faqs">
-              {_t("login.login-info-2")}
-            </a>
-          </p>
-          <Button disabled={inProgress} block={true} onClick={this.login}>
-            {inProgress && username && key && spinner}
-            {_t("g.login")}
-          </Button>
-        </Form> */}
-        <OrDivider />
-        {/* <div className="hs-login">
-          <a
-            className={_c(
-              `btn btn-outline-primary ${inProgress ? "disabled" : ""}`
-            )}
-            onClick={this.hsLogin}
+        <OrDivider text={"Login options"}/>
+
+        <div>
+          <Form
+            className="login-form"
+            onSubmit={(e: React.FormEvent) => {
+              e.preventDefault();
+            }}
           >
-            <img
-              src={global.isElectron ? "./img/hive-signer.svg" : hsLogo}
-              className="hs-logo"
-              alt="hivesigner"
-            />{" "}
-            {_t("login.with-hive-signer")}
-          </a>
-        </div> */}
+            <Form.Group>
+              <Form.Control
+                type="text"
+                value={username}
+                onChange={this.usernameChanged}
+                placeholder={_t("login.username-placeholder")}
+                autoFocus={true}
+                onKeyDown={this.inputKeyDown}
+              />
+            </Form.Group>
+          </Form>
+          <div className="kc-login">
+              <a
+                className={_c(
+                  `btn btn-outline-primary ${inProgress ? "disabled" : ""}`
+                )}
+                onClick={()=> console.log("login in with hive auth...")}
+              >
+                <img src={hiveAuthLogo} className="kc-logo" alt="keychain" />{" "}
+                {_t("login.with-hive-auth")}
+              </a>
+            </div>
+        </div>
+
+        <OrDivider text={"OR"}/>
+
         {/* {global.hasKeyChain && ( */}
         <div className="d-flex flex-column align-items-center">
           <div className="mb-3 d-flex flex-column align-items-center">
             <span>Make sure you have keychain installed!</span>
             <span className="mt-3">Don't have keychain? download <a href="https://hive-keychain.com/">here</a></span>
           </div>
-          <div className="kc-login">
-            <a
-              className={_c(
-                `btn btn-outline-primary ${inProgress ? "disabled" : ""}`
-              )}
-              onClick={this.kcLogin}
+
+          <div>
+            <Form
+              className="login-form"
+              onSubmit={(e: React.FormEvent) => {
+                e.preventDefault();
+              }}
             >
-              <img src={keyChainLogo} className="kc-logo" alt="keychain" />{" "}
-              {_t("login.with-keychain")}
-            </a>
+              <Form.Group>
+                <Form.Control
+                  type="text"
+                  value={username}
+                  onChange={this.usernameChanged}
+                  placeholder={_t("login.username-placeholder")}
+                  autoFocus={true}
+                  onKeyDown={this.inputKeyDown}
+                />
+              </Form.Group>
+            </Form>
+            <div className="kc-login">
+              <a
+                className={_c(
+                  `btn btn-outline-primary ${inProgress ? "disabled" : ""}`
+                )}
+                onClick={this.kcLogin}
+              >
+                <img src={keyChainLogo} className="kc-logo" alt="keychain" />{" "}
+                {_t("login.with-keychain")}
+              </a>
+            </div>
           </div>
         </div>
         {/* )} */}

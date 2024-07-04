@@ -1,13 +1,17 @@
-import React, {Component} from "react";
-import {_t} from "../../i18n";
+import React, { Component } from "react";
 
-export default class OrDivider extends Component {
+interface OrDividerProps {
+    text: string;
+}
+
+class OrDivider extends Component<OrDividerProps> {
     render() {
+        const { text } = this.props;
 
         return (
-            <>
-                <div className="or-divider">{_t("g.or")}</div>
-            </>
+            <div className="or-divider">{text}</div>
         );
     }
 }
+
+export default OrDivider;
