@@ -19,7 +19,9 @@ export enum EntryFilter {
     created = "created",
     payout = "payout",
     payout_comments = "payout_comments",
-    muted = "muted"
+    muted = "muted",
+    tags = "tags",
+    authors = "authors"
 }
 
 export enum ProfileFilter {

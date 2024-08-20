@@ -59,6 +59,8 @@ export class CommunityMenu extends Component<Props> {
           EntryFilter.created,
           EntryFilter.payout,
           EntryFilter.muted,
+          EntryFilter.tags,
+          EntryFilter.authors,
         ].map((x) => {
           return {
             label: _t(`entry-filter.filter-${x}`),
