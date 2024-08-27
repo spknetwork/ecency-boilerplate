@@ -71,6 +71,7 @@ export interface Global {
   hive_id: string;
   tags: string[];
   communityTitle: string;
+  baAuthors: string[];
 }
 
 export enum ActionTypes {

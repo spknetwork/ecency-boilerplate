@@ -35,7 +35,7 @@ import CommunityActivities from "../components/community-activities";
 import CommunityRoles from "../components/community-roles";
 import ScrollToTop from "../components/scroll-to-top";
 
-import { getCommunity, getSubscriptions } from "../api/bridge";
+import { getAccountPosts, getCommunity, getSubscriptions } from "../api/bridge";
 
 import { _t } from "../i18n";
 
@@ -45,6 +45,9 @@ import capitalize from "../util/capitalize";
 import defaults from "../constants/defaults.json";
 import SearchBox from "../components/search-box";
 import { setupConfig } from "../../setup";
+import { FormControl } from "react-bootstrap";
+import { Entry } from "../store/entries/types";
+import AuthorsPosts from "../components/authors-and-tags";
 
 interface MatchParams {
   filter: string;
@@ -61,6 +64,9 @@ interface State {
   search: string;
   searchDataLoading: boolean;
   searchData: SearchResult[];
+  authorsPosts: any;
+  baAuthor: string;
+  baTag: string;
 }
 
 class CommunityPage extends BaseComponent<Props, State> {
@@ -70,6 +76,9 @@ class CommunityPage extends BaseComponent<Props, State> {
     search: "",
     searchDataLoading: false,
     searchData: [],
+    authorsPosts: [],
+    baAuthor: this.props.global.baAuthors[1],
+    baTag: this.props.global.tags[0]
   };
 
   constructor(props: Props) {
@@ -90,6 +99,9 @@ class CommunityPage extends BaseComponent<Props, State> {
       search: searchParam,
       searchDataLoading: searchParam.length > 0,
       searchData: [],
+      authorsPosts: [],
+      baAuthor: this.props.global.baAuthors[1],
+      baTag: this.props.global.tags[0]
     };
   }
 
@@ -110,6 +122,7 @@ class CommunityPage extends BaseComponent<Props, State> {
         if (r) updateSubscriptions(r);
       });
     }
+    this.getPostsByUser()
   }
 
   componentDidUpdate(prevProps: Readonly<Props>): void {
@@ -126,7 +139,7 @@ class CommunityPage extends BaseComponent<Props, State> {
 
     //  community or filter changed
     if (
-      (filter !== prevParams.filter || name !== prevParams.name) &&
+      (filter !== prevParams?.filter || name !== prevParams.name) &&
       EntryFilter[filter as EntryFilter]
     ) {
       fetchEntries(match.params.filter, match.params.name, false);
@@ -241,13 +254,31 @@ class CommunityPage extends BaseComponent<Props, State> {
     this.delayedSearch(value);
   };
 
+  getPostsByUser = async () => {
+    const authorsPosts = await getAccountPosts("posts",this.state.baAuthor);
+    console.log(authorsPosts)
+    this.setState({authorsPosts})
+  }
+
+  authorsChanged = (e: { target: { value: any; }; })=>{
+    const baAuthor = e.target.value
+    console.log(e.target.value)
+    this.setState({baAuthor})
+  }
+  tagsChanged = (e: { target: { value: any; }; })=>{
+    const baTag = e.target.value
+    console.log(e.target.value)
+    this.setState({baTag})
+  }
+
   render() {
     const { global, entries, communities, accounts, match } = this.props;
-    const { loading, search, searchData, searchDataLoading, typing } =
+    const { loading, search, searchData, searchDataLoading, typing, authorsPosts } =
       this.state;
-
     const { filter } = match.params;
-    const { hive_id: name, tags } = global;
+    const { hive_id: name, tags, baAuthors } = global;
+    console.log(baAuthors)
+    console.log(tags)
 
     const community = communities.find((x) => x.name === name);
     const account = accounts.find((x) => x.name === name);
@@ -350,6 +381,47 @@ class CommunityPage extends BaseComponent<Props, State> {
                 return <CommunityRoles {...this.props} community={community} />;
               }
 
+              if (filter === "tags") return (
+                <>
+                  <FormControl className="w-50 mt-3" as="select" onChange={this.tagsChanged}>
+                    <option value="">Select tag</option>
+                    {global.tags.map(x => (
+                      <option key={x} value={x}>{x}</option>
+                    ))}
+                  </FormControl>
+                  <div>
+                  <EntryListContent
+                      {...this.props}
+                      entries={[]}
+                      promotedEntries={promoted}
+                      community={community}
+                      loading={loading}
+                    />
+                  </div>
+                </>
+              )
+
+              if (filter === "authors") return (
+                <>
+                  <FormControl className="w-50 mt-3" as="select" onChange={this.authorsChanged}>
+                    <option value="">Select Author</option>
+                    {global.baAuthors.map(x => (
+                      <option key={x} value={x}>{x}</option>
+                    ))}
+                  </FormControl>
+                  <div>
+                  <AuthorsPosts
+                    promoted={[]} 
+                    {...this.props}
+                    entries={authorsPosts}
+                    promotedEntries={[]}
+                    community={community}
+                    loading={loading}
+                    />
+                  </div>
+                </>
+              )
+
               const groupKey = makeGroupKey(filter, name);
               const data = entries[groupKey];
 
@@ -417,13 +489,13 @@ class CommunityPage extends BaseComponent<Props, State> {
                           {loading && entryList.length === 0 && (
                             <EntryListLoadingItem />
                           )}
-                          {EntryListContent({
-                            ...this.props,
-                            entries: entryList,
-                            promotedEntries: promoted,
-                            community,
-                            loading,
-                          })}
+                          <EntryListContent
+                            {...this.props}
+                            entries={entryList}
+                            promotedEntries={promoted}
+                            community={community}
+                            loading={loading}
+                          />
                         </div>
                       </div>
                     )}

@@ -77,7 +77,7 @@ export class EntryReblogBtn extends BaseComponent<Props> {
         reblog(activeUser?.username!, entry.author, entry.permlink)
             .then(async () => {
                 addReblog(entry.author, entry.permlink);
-                const baResponse = await updateUserPoints(activeUser!.username, communityData.title, "reblog")
+                const baResponse = await updateUserPoints(activeUser!.username, communityData.title, communityData.name, "reblog")
                 success(_t("entry-reblog.success"));
             })
             .catch((e) => {

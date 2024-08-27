@@ -400,7 +400,7 @@ export class EntryVoteBtn extends BaseComponent<Props, State> {
         afterVote(votes, estimated);
         updateActiveUser(); // refresh voting power
 
-        const baResponse = await updateUserPoints(activeUser!.username, communityData.title, "upvote")
+        const baResponse = await updateUserPoints(activeUser!.username, communityData.title,communityData.name, "upvote")
       })
       .catch((e) => {
         error(formatError(e));

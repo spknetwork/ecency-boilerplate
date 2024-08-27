@@ -56,6 +56,7 @@ export const makePreloadedState = async (
     ctheme: config.theme,
     tags: [...config.tags],
     baseApiUrl: config.baseApiUrl,
+    baAuthors: [...config.authors],
     communityTitle: communityData!.title
   };
 
