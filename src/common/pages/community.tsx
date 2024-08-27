@@ -67,6 +67,7 @@ interface State {
   authorsPosts: any;
   baAuthor: string;
   baTag: string;
+  loadingb: boolean;
 }
 
 class CommunityPage extends BaseComponent<Props, State> {
@@ -78,7 +79,8 @@ class CommunityPage extends BaseComponent<Props, State> {
     searchData: [],
     authorsPosts: [],
     baAuthor: this.props.global.baAuthors[1],
-    baTag: this.props.global.tags[0]
+    baTag: this.props.global.tags[0],
+    loadingb: false,
   };
 
   constructor(props: Props) {
@@ -101,7 +103,8 @@ class CommunityPage extends BaseComponent<Props, State> {
       searchData: [],
       authorsPosts: [],
       baAuthor: this.props.global.baAuthors[1],
-      baTag: this.props.global.tags[0]
+      baTag: this.props.global.tags[0],
+      loadingb: false,
     };
   }
 
@@ -122,7 +125,7 @@ class CommunityPage extends BaseComponent<Props, State> {
         if (r) updateSubscriptions(r);
       });
     }
-    this.getPostsByUser()
+    this.getPostsByUser();
   }
 
   componentDidUpdate(prevProps: Readonly<Props>): void {
@@ -255,16 +258,27 @@ class CommunityPage extends BaseComponent<Props, State> {
   };
 
   getPostsByUser = async () => {
-    const authorsPosts = await getAccountPosts("posts",this.state.baAuthor);
-    console.log(authorsPosts)
-    this.setState({authorsPosts})
+    this.setState({loadingb: true})
+    try {
+      const authorsPosts = await getAccountPosts("posts",this.state.baAuthor);
+      console.log(authorsPosts)
+      this.setState({authorsPosts, loadingb: false})
+    } catch (error) {
+      console.log(error);
+      this.setState({loadingb: false})
+    }
   }
 
-  authorsChanged = (e: { target: { value: any; }; })=>{
-    const baAuthor = e.target.value
-    console.log(e.target.value)
-    this.setState({baAuthor})
-  }
+  authorsChanged = async (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const baAuthor = e.target.value;
+    
+    this.setState({ baAuthor }, () => {
+        this.getPostsByUser();
+    });
+}
+
   tagsChanged = (e: { target: { value: any; }; })=>{
     const baTag = e.target.value
     console.log(e.target.value)
@@ -273,7 +287,7 @@ class CommunityPage extends BaseComponent<Props, State> {
 
   render() {
     const { global, entries, communities, accounts, match } = this.props;
-    const { loading, search, searchData, searchDataLoading, typing, authorsPosts } =
+    const { loading, search, searchData, searchDataLoading, typing, authorsPosts, loadingb } =
       this.state;
     const { filter } = match.params;
     const { hive_id: name, tags, baAuthors } = global;
@@ -400,16 +414,16 @@ class CommunityPage extends BaseComponent<Props, State> {
                   </div>
                 </>
               )
-
+              
               if (filter === "authors") return (
                 <>
                   <FormControl className="w-50 mt-3" as="select" onChange={this.authorsChanged}>
-                    <option value="">Select Author</option>
+                    {/* <option value="">Select Author</option> */}
                     {global.baAuthors.map(x => (
                       <option key={x} value={x}>{x}</option>
                     ))}
                   </FormControl>
-                  <div>
+                  { loadingb ? <LinearProgress/> : <div>
                   <AuthorsPosts
                     promoted={[]} 
                     {...this.props}
@@ -418,7 +432,7 @@ class CommunityPage extends BaseComponent<Props, State> {
                     community={community}
                     loading={loading}
                     />
-                  </div>
+                  </div>}
                 </>
               )
 
