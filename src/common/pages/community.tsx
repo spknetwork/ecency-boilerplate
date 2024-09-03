@@ -78,7 +78,7 @@ class CommunityPage extends BaseComponent<Props, State> {
     searchDataLoading: false,
     searchData: [],
     authorsPosts: [],
-    baAuthor: this.props.global.baAuthors[1],
+    baAuthor: this.props.global.baAuthors[0],
     baTag: this.props.global.tags[0],
     loadingb: false,
   };
@@ -258,16 +258,25 @@ class CommunityPage extends BaseComponent<Props, State> {
   };
 
   getPostsByUser = async () => {
-    this.setState({loadingb: true})
+    this.setState({ loadingb: true });
+    
+    const authors = this.props.global.baAuthors;
+    console.log(authors)
+    let allPosts: any = [];
+  
     try {
-      const authorsPosts = await getAccountPosts("posts",this.state.baAuthor);
-      console.log(authorsPosts)
-      this.setState({authorsPosts, loadingb: false})
+      // Fetch posts for each author
+      for (const author of authors) {
+        const authorPosts: any = await getAccountPosts("posts", author);
+        allPosts = [...allPosts, ...authorPosts]; // Merge posts into a single array
+      }
+      console.log("allPosts.......", allPosts);
+      this.setState({ authorsPosts: allPosts, loadingb: false });
     } catch (error) {
       console.log(error);
-      this.setState({loadingb: false})
+      this.setState({ loadingb: false });
     }
-  }
+  };
 
   authorsChanged = async (e: any) => {
     e.preventDefault();
@@ -285,14 +294,30 @@ class CommunityPage extends BaseComponent<Props, State> {
     this.setState({baTag})
   }
 
+  ////might not be needed again
+  interleaveArrays = (arr1: any, arr2: any) => {
+    const newArray = [...arr1, ...arr2]
+  // const length = newArray.length
+
+  // for (let start = 0; start < length; start++) {
+  //   const randomPosition = Math.floor((newArray.length - start) * Math.random())
+  //   const randomItem = newArray.splice(randomPosition, 1)
+
+  //   newArray.push(...randomItem)
+  // }
+  // console.log(arr2, "_.shuffle(newArray)") 
+  return _.shuffle(newArray)
+  }
+  
+
   render() {
     const { global, entries, communities, accounts, match } = this.props;
     const { loading, search, searchData, searchDataLoading, typing, authorsPosts, loadingb } =
       this.state;
     const { filter } = match.params;
     const { hive_id: name, tags, baAuthors } = global;
-    console.log(baAuthors)
-    console.log(tags)
+    // console.log(baAuthors)
+    // console.log(tags)
 
     const community = communities.find((x) => x.name === name);
     const account = accounts.find((x) => x.name === name);
@@ -394,27 +419,8 @@ class CommunityPage extends BaseComponent<Props, State> {
               if (filter === "roles") {
                 return <CommunityRoles {...this.props} community={community} />;
               }
-
-              if (filter === "tags") return (
-                <>
-                  <FormControl className="w-50 mt-3" as="select" onChange={this.tagsChanged}>
-                    <option value="">Select tag</option>
-                    {global.tags.map(x => (
-                      <option key={x} value={x}>{x}</option>
-                    ))}
-                  </FormControl>
-                  <div>
-                  <EntryListContent
-                      {...this.props}
-                      entries={[]}
-                      promotedEntries={promoted}
-                      community={community}
-                      loading={loading}
-                    />
-                  </div>
-                </>
-              )
               
+              ///might not need this anymore
               if (filter === "authors") return (
                 <>
                   <FormControl className="w-50 mt-3" as="select" onChange={this.authorsChanged}>
@@ -441,7 +447,34 @@ class CommunityPage extends BaseComponent<Props, State> {
 
               if (data !== undefined) {
                 const entryList = data?.entries;
+                // console.log("object....", entryList)
                 const loading = data?.loading;
+                const interleavedEntries = this.interleaveArrays(authorsPosts, entryList);
+
+                //////IF COMMUNITY TYPE === AUTHORS
+                const postToRender = [...authorsPosts, ...entryList].sort((a, b) => Number(new Date(b.created)) - Number(new Date(a.created)));
+                console.log(postToRender)
+
+                /////might not need this also anymore
+                if (filter === "tags") return (
+                  <>
+                    <FormControl className="w-50 mt-3" as="select" onChange={this.tagsChanged}>
+                      <option value="">Select tag</option>
+                      {global.tags.map(x => (
+                        <option key={x} value={x}>{x}</option>
+                      ))}
+                    </FormControl>
+                    <div>
+                    <EntryListContent
+                        {...this.props}
+                        entries={postToRender}
+                        promotedEntries={promoted}
+                        community={community}
+                        loading={loading}
+                      />
+                    </div>
+                  </>
+                )
 
                 return (
                   <>
@@ -505,7 +538,7 @@ class CommunityPage extends BaseComponent<Props, State> {
                           )}
                           <EntryListContent
                             {...this.props}
-                            entries={entryList}
+                            entries={interleavedEntries}
                             promotedEntries={promoted}
                             community={community}
                             loading={loading}
