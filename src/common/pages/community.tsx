@@ -315,8 +315,8 @@ class CommunityPage extends BaseComponent<Props, State> {
     const { loading, search, searchData, searchDataLoading, typing, authorsPosts, loadingb } =
       this.state;
     const { filter } = match.params;
-    const { hive_id: name, tags, baAuthors } = global;
-    // console.log(baAuthors)
+    const { hive_id: name, tags, baAuthors, communityType } = global;
+    console.log(global)
     // console.log(tags)
 
     const community = communities.find((x) => x.name === name);
@@ -538,7 +538,9 @@ class CommunityPage extends BaseComponent<Props, State> {
                           )}
                           <EntryListContent
                             {...this.props}
-                            entries={interleavedEntries}
+                            entries={
+                              communityType === "authors+tags" ? postToRender : 
+                              communityType === "standard" ? entryList : []} //////will update condition later
                             promotedEntries={promoted}
                             community={community}
                             loading={loading}

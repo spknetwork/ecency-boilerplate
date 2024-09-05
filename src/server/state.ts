@@ -57,7 +57,8 @@ export const makePreloadedState = async (
     tags: [...config.tags],
     baseApiUrl: config.baseApiUrl,
     baAuthors: [...config.authors],
-    communityTitle: communityData!.title
+    communityTitle: communityData!.title,
+    communityType: config.communityType
   };
 
   const dynamicProps = await getDynamicProps();

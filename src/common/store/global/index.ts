@@ -57,7 +57,8 @@ export const initialState: Global = {
   hive_id: "hive-112019",
   baseApiUrl: "https://account-creator.3speak.tv/api",
   communityTitle: "",
-  baAuthors: []
+  baAuthors: [],
+  communityType: "standard",
 };
 
 export default (state: Global = initialState, action: Actions): Global => {

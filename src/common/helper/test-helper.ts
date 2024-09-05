@@ -128,7 +128,8 @@ export const globalInstance: Global = {
   ctheme: "",
   baseApiUrl: "",
   communityTitle: "",
-  baAuthors: []
+  baAuthors: [],
+  communityType: ""
 };
 
 export const TrendingTagsInstance: TrendingTags = {

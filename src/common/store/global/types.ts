@@ -72,6 +72,7 @@ export interface Global {
   tags: string[];
   communityTitle: string;
   baAuthors: string[];
+  communityType: string | undefined; 
 }
 
 export enum ActionTypes {

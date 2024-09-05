@@ -9,4 +9,5 @@ export default {
   availibleAccounts: process.env.ACCOUNTS ? +process.env.ACCOUNTS : 0,
   baseApiUrl: process.env.API_URL || "https://account-creator.3speak.tv/api",
   authors: process.env.AUTHORS?.split(",") || "",
+  communityType: process.env.COMMUNITY_TYPE,
 };
