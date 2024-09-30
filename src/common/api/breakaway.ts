@@ -88,11 +88,12 @@ export  const getBaUserPoints = async (username: string, community: string): Pro
   } 
 };
 
-export const updateUserPoints = async (username: string, community: string, pointType: string) => {
+export const updateUserPoints = async (username: string, community: string, communityId: string, pointType: string) => {
   try {
     const requestData = {
       username,
       community,
+      communityId,
       pointType,
     };
 

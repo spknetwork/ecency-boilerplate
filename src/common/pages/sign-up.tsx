@@ -29,6 +29,7 @@ import { getAccount } from "../api/hive";
 import { OffchainUser } from "../components/offchain-users";
 import QRCode from "react-qr-code";
 import { History } from "history";
+import { BitcoinOrdinals } from "../components/bitcoin-ordinals";
 
 const HiveLogo = require("../img/hive-logo.jpeg");
 const solanaLogo = require("../img/solanaLogo.png");
@@ -43,6 +44,7 @@ interface Props {
 const SignUpPage = (props: Props | any) => {
   const form = useRef(null);
   const { global, communities, activeUser, history } = props;
+  console.log(global)
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -55,7 +57,7 @@ const SignUpPage = (props: Props | any) => {
   const [step, setStep] = useState(1);
   const [error, setError] = useState("");
   const [isDownloaded, setIsDownloaded] = useState(false);
-  const [accountType, setAccountType] = useState("Hive");
+  const [accountType, setAccountType] = useState(global.communityType === "btc_ordinals" ? "btc_ordinals" : "Hive");
 
   useEffect(() => {
     getCurrentCommunity();
@@ -248,7 +250,7 @@ const SignUpPage = (props: Props | any) => {
         : NavBar({ ...props })}
       <div className={`sign-up-page ${containerClasses}`}>
         <div className="signup-wrapper">
-          {step === 1 && (
+          {(step === 1 && global.communityType !== "btc_ordinals") && (
             <div className="account-types align-self-center d-flex">
               {/* <h3>Sign up with</h3> */}
               <div
@@ -277,7 +279,7 @@ const SignUpPage = (props: Props | any) => {
             </div>
           )}
           <div className="account-sign-up">
-            {accountType === "Hive" && (
+            {(accountType === "Hive" && global.communityType !== "btc_ordinals" )&& (
               <>
                 {step == 1 && (
                   <div className="sign-up">
@@ -560,6 +562,16 @@ const SignUpPage = (props: Props | any) => {
                   setStep={setStep}
                   setInProgress={setInProgress}
                 />
+              </>
+            )}
+            {(step === 1 && accountType === "btc_ordinals") && (
+              <>
+                <BitcoinOrdinals
+                  inProgress={inProgress}
+                  step={step}
+                  setStep={setStep}
+                  setInProgress={setInProgress} 
+                  />
               </>
             )}
           </div>

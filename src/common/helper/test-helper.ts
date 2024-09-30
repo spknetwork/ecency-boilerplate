@@ -127,7 +127,9 @@ export const globalInstance: Global = {
   hive_id: "",
   ctheme: "",
   baseApiUrl: "",
-  communityTitle: ""
+  communityTitle: "",
+  baAuthors: [],
+  communityType: ""
 };
 
 export const TrendingTagsInstance: TrendingTags = {

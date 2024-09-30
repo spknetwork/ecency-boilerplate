@@ -62,8 +62,8 @@ export const getPostsRanked = (
 }
 
 export const getAccountPosts = (
-    sort: string,
-    account: string,
+    sort?: string,
+    account?: string,
     start_author: string = "",
     start_permlink: string = "",
     limit: number = dataLimit,

@@ -35,7 +35,7 @@ import CommunityActivities from "../components/community-activities";
 import CommunityRoles from "../components/community-roles";
 import ScrollToTop from "../components/scroll-to-top";
 
-import { getCommunity, getSubscriptions } from "../api/bridge";
+import { getAccountPosts, getCommunity, getSubscriptions } from "../api/bridge";
 
 import { _t } from "../i18n";
 
@@ -45,6 +45,9 @@ import capitalize from "../util/capitalize";
 import defaults from "../constants/defaults.json";
 import SearchBox from "../components/search-box";
 import { setupConfig } from "../../setup";
+import { FormControl } from "react-bootstrap";
+import { Entry } from "../store/entries/types";
+import AuthorsPosts from "../components/authors-and-tags";
 
 interface MatchParams {
   filter: string;
@@ -61,6 +64,10 @@ interface State {
   search: string;
   searchDataLoading: boolean;
   searchData: SearchResult[];
+  authorsPosts: any;
+  baAuthor: string;
+  baTag: string;
+  loadingb: boolean;
 }
 
 class CommunityPage extends BaseComponent<Props, State> {
@@ -70,6 +77,10 @@ class CommunityPage extends BaseComponent<Props, State> {
     search: "",
     searchDataLoading: false,
     searchData: [],
+    authorsPosts: [],
+    baAuthor: this.props.global.baAuthors[0],
+    baTag: this.props.global.tags[0],
+    loadingb: false,
   };
 
   constructor(props: Props) {
@@ -90,6 +101,10 @@ class CommunityPage extends BaseComponent<Props, State> {
       search: searchParam,
       searchDataLoading: searchParam.length > 0,
       searchData: [],
+      authorsPosts: [],
+      baAuthor: this.props.global.baAuthors[1],
+      baTag: this.props.global.tags[0],
+      loadingb: false,
     };
   }
 
@@ -110,6 +125,7 @@ class CommunityPage extends BaseComponent<Props, State> {
         if (r) updateSubscriptions(r);
       });
     }
+    this.getPostsByUser();
   }
 
   componentDidUpdate(prevProps: Readonly<Props>): void {
@@ -126,7 +142,7 @@ class CommunityPage extends BaseComponent<Props, State> {
 
     //  community or filter changed
     if (
-      (filter !== prevParams.filter || name !== prevParams.name) &&
+      (filter !== prevParams?.filter || name !== prevParams.name) &&
       EntryFilter[filter as EntryFilter]
     ) {
       fetchEntries(match.params.filter, match.params.name, false);
@@ -241,13 +257,67 @@ class CommunityPage extends BaseComponent<Props, State> {
     this.delayedSearch(value);
   };
 
+  getPostsByUser = async () => {
+    this.setState({ loadingb: true });
+    
+    const authors = this.props.global.baAuthors;
+    console.log(authors)
+    let allPosts: any = [];
+  
+    try {
+      // Fetch posts for each author
+      for (const author of authors) {
+        const authorPosts: any = await getAccountPosts("posts", author);
+        allPosts = [...allPosts, ...authorPosts]; // Merge posts into a single array
+      }
+      console.log("allPosts.......", allPosts);
+      this.setState({ authorsPosts: allPosts, loadingb: false });
+    } catch (error) {
+      console.log(error);
+      this.setState({ loadingb: false });
+    }
+  };
+
+  authorsChanged = async (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const baAuthor = e.target.value;
+    
+    this.setState({ baAuthor }, () => {
+        this.getPostsByUser();
+    });
+}
+
+  tagsChanged = (e: { target: { value: any; }; })=>{
+    const baTag = e.target.value
+    console.log(e.target.value)
+    this.setState({baTag})
+  }
+
+  ////might not be needed again
+  interleaveArrays = (arr1: any, arr2: any) => {
+    const newArray = [...arr1, ...arr2]
+  // const length = newArray.length
+
+  // for (let start = 0; start < length; start++) {
+  //   const randomPosition = Math.floor((newArray.length - start) * Math.random())
+  //   const randomItem = newArray.splice(randomPosition, 1)
+
+  //   newArray.push(...randomItem)
+  // }
+  // console.log(arr2, "_.shuffle(newArray)") 
+  return _.shuffle(newArray)
+  }
+  
+
   render() {
     const { global, entries, communities, accounts, match } = this.props;
-    const { loading, search, searchData, searchDataLoading, typing } =
+    const { loading, search, searchData, searchDataLoading, typing, authorsPosts, loadingb } =
       this.state;
-
     const { filter } = match.params;
-    const { hive_id: name, tags } = global;
+    const { hive_id: name, tags, baAuthors, communityType } = global;
+    console.log(global)
+    // console.log(tags)
 
     const community = communities.find((x) => x.name === name);
     const account = accounts.find((x) => x.name === name);
@@ -349,13 +419,62 @@ class CommunityPage extends BaseComponent<Props, State> {
               if (filter === "roles") {
                 return <CommunityRoles {...this.props} community={community} />;
               }
+              
+              ///might not need this anymore
+              if (filter === "authors") return (
+                <>
+                  <FormControl className="w-50 mt-3" as="select" onChange={this.authorsChanged}>
+                    {/* <option value="">Select Author</option> */}
+                    {global.baAuthors.map(x => (
+                      <option key={x} value={x}>{x}</option>
+                    ))}
+                  </FormControl>
+                  { loadingb ? <LinearProgress/> : <div>
+                  <AuthorsPosts
+                    promoted={[]} 
+                    {...this.props}
+                    entries={authorsPosts}
+                    promotedEntries={[]}
+                    community={community}
+                    loading={loading}
+                    />
+                  </div>}
+                </>
+              )
 
               const groupKey = makeGroupKey(filter, name);
               const data = entries[groupKey];
 
               if (data !== undefined) {
                 const entryList = data?.entries;
+                // console.log("object....", entryList)
                 const loading = data?.loading;
+                const interleavedEntries = this.interleaveArrays(authorsPosts, entryList);
+
+                //////IF COMMUNITY TYPE === AUTHORS
+                const postToRender = [...authorsPosts, ...entryList].sort((a, b) => Number(new Date(b.created)) - Number(new Date(a.created)));
+                console.log(postToRender)
+
+                /////might not need this also anymore
+                if (filter === "tags") return (
+                  <>
+                    <FormControl className="w-50 mt-3" as="select" onChange={this.tagsChanged}>
+                      <option value="">Select tag</option>
+                      {global.tags.map(x => (
+                        <option key={x} value={x}>{x}</option>
+                      ))}
+                    </FormControl>
+                    <div>
+                    <EntryListContent
+                        {...this.props}
+                        entries={postToRender}
+                        promotedEntries={promoted}
+                        community={community}
+                        loading={loading}
+                      />
+                    </div>
+                  </>
+                )
 
                 return (
                   <>
@@ -417,13 +536,15 @@ class CommunityPage extends BaseComponent<Props, State> {
                           {loading && entryList.length === 0 && (
                             <EntryListLoadingItem />
                           )}
-                          {EntryListContent({
-                            ...this.props,
-                            entries: entryList,
-                            promotedEntries: promoted,
-                            community,
-                            loading,
-                          })}
+                          <EntryListContent
+                            {...this.props}
+                            entries={
+                              communityType === "authors+tags" ? postToRender : 
+                              communityType === "standard" ? entryList : []} //////will update condition later
+                            promotedEntries={promoted}
+                            community={community}
+                            loading={loading}
+                          />
                         </div>
                       </div>
                     )}

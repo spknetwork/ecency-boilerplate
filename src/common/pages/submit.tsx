@@ -603,7 +603,7 @@ class SubmitPage extends BaseComponent<Props, State> {
                     percent_hbd: options.percent_hbd
                 };
                 addEntry(entry);
-                const baResponse = await updateUserPoints(activeUser!.username, communityData.title, "posts");
+                const baResponse = await updateUserPoints(activeUser!.username, communityData.title,communityData.name, "posts");
 
                 success(_t("submit.published"));
                 this.clear();

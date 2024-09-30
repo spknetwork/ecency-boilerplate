@@ -19,7 +19,9 @@ export enum EntryFilter {
     created = "created",
     payout = "payout",
     payout_comments = "payout_comments",
-    muted = "muted"
+    muted = "muted",
+    tags = "tags",
+    authors = "authors"
 }
 
 export enum ProfileFilter {
@@ -69,6 +71,8 @@ export interface Global {
   hive_id: string;
   tags: string[];
   communityTitle: string;
+  baAuthors: string[];
+  communityType: string | undefined; 
 }
 
 export enum ActionTypes {
