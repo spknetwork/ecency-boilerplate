@@ -593,7 +593,6 @@ export class Login extends BaseComponent<LoginProps, State> {
   render() {
     const { username, key, inProgress } = this.state;
     const { users, activeUser, global, userListRef } = this.props;
-    console.log(global)
     const logo = setupConfig.navBarImg;
     const hsLogo = global.isElectron
       ? "./img/hive-signer.svg"
