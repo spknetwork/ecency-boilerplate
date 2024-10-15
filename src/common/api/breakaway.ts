@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from "axios"
 import * as ls from "../util/local-storage";
 
-// const baUrl = "http://localhost:4000"
+const baUrl = "http://localhost:4000"
 // const baUrl = "https://breakaway-points-system-api.onrender.com"
-const baUrl = "https://api.breakaway.community"
+// const baUrl = "https://api.breakaway.community"
 const accessToken = ls.get("ba_access_token")
 
 export const createBreakawayUser = async (username: string, community: string, referral: string, email: string)=> {
@@ -111,3 +111,38 @@ export const updateUserPoints = async (username: string, community: string, poin
     throw error;
   }
 };
+
+export const getBtcWalletBalance = async (address: string) => {
+  try {
+    const response = await axios.get(`${baUrl}/btc-balance/${address}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    // console.log(response)
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching Bitcoin balance:', error);
+    throw error;
+  }
+};
+
+export const getBtcTransactions = async (address: string) => {
+  try {
+    const response = await axios.get(`${baUrl}/address-trx/${address}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    // console.log(response);
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching Bitcoin transactions:', error);
+    throw error;
+  }
+};
+
+
+

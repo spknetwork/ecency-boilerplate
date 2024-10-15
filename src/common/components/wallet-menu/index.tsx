@@ -7,7 +7,7 @@ import { Global } from "../../store/global/types";
 import _c from "../../util/fix-class-names";
 
 import { hiveSvg } from "../../img/svg";
-import { hiveEngineSvg } from "../../img/svg";
+import { hiveEngineSvg, bitcoinSvg } from "../../img/svg";
 
 interface Props {
   global: Global;
@@ -39,6 +39,11 @@ export default class WalletMenu extends Component<Props> {
                     <span className="title">Engine</span>
                     <span className="sub-title">Tokens</span>
                     <span className="platform-logo">{hiveEngineSvg}</span>
+                </Link>
+                <Link className={_c(`menu-item bitcoin ${active === "bitcoin" ? "active" : ""}`)} to={`/@${username}/bitcoin-machines`}>
+                    <span className="title">Btc</span>
+                    <span className="sub-title">Ordinals</span>
+                    <span className="platform-logo">{bitcoinSvg}</span>
                 </Link>
             </div>
         );
