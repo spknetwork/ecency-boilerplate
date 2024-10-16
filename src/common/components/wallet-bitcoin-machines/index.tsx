@@ -245,6 +245,18 @@ export const WalletBtc = (props: Props) => {
                             </div>
                         </div>
 
+                        <div className="balance-row alternative">
+                            <div className="balance-info">
+                                <div className="title">Staked Token</div>
+                                <div className="description">Staked tokens are simila to hive power. The more tokens you stake, the more influnce you can have in rewarding other people's content</div>
+                            </div>
+                            <div className="balance-values">
+                                <div className="amount">
+                                    0.000 OrdsToken
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="p-transaction-list">
                             <div className="transaction-list-header">
                                 <h2>Bitcoin Wallet Transactions</h2>
