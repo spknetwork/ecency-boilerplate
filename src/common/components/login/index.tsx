@@ -643,7 +643,8 @@ export class Login extends BaseComponent<LoginProps, State> {
           </>
         )}
 
-        {(global.communityTitle === "Vibes" && global.hive_id === "hive-140169") && <Form
+        {/* {(global.communityTitle === "Vibes" && global.hive_id === "hive-140169") &&  */}
+        <Form
           className="login-form"
           onSubmit={(e: React.FormEvent) => {
             e.preventDefault();
@@ -680,7 +681,8 @@ export class Login extends BaseComponent<LoginProps, State> {
             {inProgress && username && key && spinner}
             {_t("g.login")}
           </Button>
-        </Form>}
+        </Form>
+        {/* // } */}
         <OrDivider />
         {/* <div className="hs-login">
           <a

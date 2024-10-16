@@ -46,6 +46,7 @@ import {PageProps, pageMapDispatchToProps, pageMapStateToProps} from "./common";
 
 import { FormControl } from 'react-bootstrap'
 import { connect } from "react-redux";
+import { WalletBtc } from "../components/wallet-bitcoin-machines";
 
 interface MatchParams {
     username: string;
@@ -429,6 +430,16 @@ class ProfilePage extends BaseComponent<Props, State> {
                                         updateWalletValues: this.ensureAccount
                                     });
                                 }
+                                
+                                if (section === "bitcoin-machines") {
+                                    return (
+                                        <WalletBtc 
+                                            {...this.props} 
+                                            account={account} 
+                                            updateWalletValues={this.ensureAccount} 
+                                        />
+                                    );
+                                }
 
                                 if (section === "communities") {
                                     return ProfileCommunities({
@@ -493,6 +504,5 @@ class ProfilePage extends BaseComponent<Props, State> {
         );
     }
 }
-
 
 export default connect(pageMapStateToProps, pageMapDispatchToProps)(ProfilePage);
