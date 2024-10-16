@@ -40,11 +40,13 @@ export default class WalletMenu extends Component<Props> {
                     <span className="sub-title">Tokens</span>
                     <span className="platform-logo">{hiveEngineSvg}</span>
                 </Link>
-                <Link className={_c(`menu-item bitcoin ${active === "bitcoin" ? "active" : ""}`)} to={`/@${username}/bitcoin-machines`}>
-                    <span className="title">Btc</span>
-                    <span className="sub-title">Ordinals</span>
-                    <span className="platform-logo">{bitcoinSvg}</span>
-                </Link>
+                {(global?.communityTitle === "Bitcoin Machines" && global?.hive_id === "hive-159314") && 
+                    <Link className={_c(`menu-item bitcoin ${active === "bitcoin" ? "active" : ""}`)} to={`/@${username}/bitcoin-machines`}>
+                        <span className="title">Btc</span>
+                        <span className="sub-title">Ordinals</span>
+                        <span className="platform-logo">{bitcoinSvg}</span>
+                    </Link>
+                }
             </div>
         );
     }

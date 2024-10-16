@@ -59,7 +59,7 @@ interface TransactionRowProps {
 export class TransactionRow extends Component<TransactionRowProps> {
     render() {
         const { tr, history, i } = this.props;
-        console.log(".......lll.......",tr.vout[0], i)
+        // console.log(".......lll.......",tr.vout[0], i)
 
         const timestamp = tr.status.block_time;
 
@@ -101,7 +101,7 @@ interface Props {
     myCommunity?: Community;
     dynamicProps: DynamicProps;
     history: History;
-    activeUser: ActiveUser | null;
+    activeUser: ActiveUser | any;
     account: Account;
     points: Points;
     signingKey: string;
@@ -120,10 +120,13 @@ export const WalletBtc = (props: Props) => {
     const [bitcoinBalance, setBitcoinBalance] = useState<any>(0);
     const [bitcoinTransactions, setBitcoinTransactions] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const [jsonMetaData, setJsonMetaData] = useState<any>(null)
 
     const { global, activeUser, account, points, history, fetchPoints, updateActiveUser } = props;
+    // const jsonMetaData = JSON.parse(activeUser?.data?.posting_json_metadata)
 
     useEffect(() => {
+        console.log(activeUser)
         setIsMounted(true);
         let user = history.location.pathname.split("/")[1];
         user = user.replace('@', '')
@@ -135,6 +138,18 @@ export const WalletBtc = (props: Props) => {
             setIsMounted(false);
         }
     }, [communityInfo?.title]);
+
+    useEffect(() => {
+        const getMetaData = () => {
+            try {
+                const metaData = JSON.parse(activeUser?.data?.posting_json_metadata);
+                setJsonMetaData(metaData)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        getMetaData()
+    }, [])
 
     const initiateOnElectron = (username: string) => {
         if (!isMounted && global.isElectron) {
@@ -154,7 +169,7 @@ export const WalletBtc = (props: Props) => {
 
     const getBitcoinBalance = async () => {
         try {
-            const data = await getBtcWalletBalance("1HAkJ2oMGrNCHHHLVLDBKt6N2Hme5Xy48k");
+            const data = await getBtcWalletBalance(jsonMetaData?.bitcoin?.address);
             if (data.success) {
                 setBitcoinBalance(data.balance);
             }
@@ -166,7 +181,7 @@ export const WalletBtc = (props: Props) => {
     const getBitcoinTransaction = async () => {
         setLoading(true)
         try {
-            const data = await getBtcTransactions("1HAkJ2oMGrNCHHHLVLDBKt6N2Hme5Xy48k");
+            const data = await getBtcTransactions(jsonMetaData?.bitcoin?.address);
             // console.log(data)
             if (data.success) {
                 setBitcoinTransactions(data.transactions);
@@ -207,10 +222,10 @@ export const WalletBtc = (props: Props) => {
                             </div>
                             <div className="balance-values">
                                 <div className="amount">
-                                    <span className="ml-5">1GhsadjhiaFyjfcyKUYFksvgdfsjhgbsdfy</span>
+                                    <span className="ml-5">{jsonMetaData?.bitcoin?.address}</span>
                                     <span 
                                         style={{cursor: "pointer"}}
-                                        onClick={()=> copyToClipboard("1GhsadjhiaFyjfcyKUYFksvgdfsjhgbsdfy")}
+                                        onClick={()=> copyToClipboard(jsonMetaData?.bitcoin?.address)}
                                     >
                                         {copyContent}
                                     </span>
