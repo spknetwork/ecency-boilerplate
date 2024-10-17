@@ -139,7 +139,7 @@
     "c2a": "Get Started"
   },
   "login": {
-    "title": "Welcome back!",
+    "title": "Welcome!",
     "with-user-pass": "Login with your username and private key.",
     "username-placeholder": "username",
     "key-placeholder": "password / private key",
