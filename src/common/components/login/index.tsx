@@ -614,7 +614,7 @@ export class Login extends BaseComponent<LoginProps, State> {
       <>
         {users.length === 0 && (
           <div className="dialog-header">
-            <img src={logo} alt="Logo" />
+            <img src={`https://images.hive.blog/u/${global.hive_id}/avatar`} alt="Logo" />
             <h2>{_t("login.title")}</h2>
           </div>
         )}
@@ -639,7 +639,7 @@ export class Login extends BaseComponent<LoginProps, State> {
                 })}
               </div>
             </div>
-            {/* <OrDivider /> */}
+            <OrDivider />
           </>
         )}
 
