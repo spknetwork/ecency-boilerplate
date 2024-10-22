@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from "axios"
 import * as ls from "../util/local-storage";
 
-// const baUrl = "http://localhost:4000"
+const baUrl = "http://localhost:4000"
 // const baUrl = "https://breakaway-points-system-api.onrender.com"
-const baUrl = "https://api.breakaway.community"
+// const baUrl = "https://api.breakaway.community"
 const accessToken = ls.get("ba_access_token")
 
 export const createBreakawayUser = async (username: string, community: string, referral: string, email: string)=> {
@@ -119,7 +119,6 @@ export const getBtcWalletBalance = async (address: string) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    // console.log(response)
 
     return response.data;
   } catch (error) {

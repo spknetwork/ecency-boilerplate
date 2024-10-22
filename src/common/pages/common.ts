@@ -89,7 +89,7 @@ export interface PageProps {
     addUser: (user: User) => void;
     deleteUser: (username: string) => void;
 
-    activeUser: ActiveUser | null;
+    activeUser: ActiveUser | any;
     setActiveUser: (username: string | null) => void;
     updateActiveUser: (data?: Account) => void;
 

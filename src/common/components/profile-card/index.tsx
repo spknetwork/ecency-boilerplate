@@ -179,7 +179,7 @@ export const ProfileCard = (props: Props) => {
                 <ResourceCreditsInfo {...props} rcPercent={rcPercent} account={account} />
             </div>
 
-            { (global?.communityTitle === "Bitcoin Machines" && global?.hive_id === "hive-159314") && 
+            { (global?.hive_id === "hive-125568" || global?.hive_id === "hive-159314") && 
             <div className="btc-profile">
                 <h5>BTC ordinal info</h5>
                 <div className="btc-info">
