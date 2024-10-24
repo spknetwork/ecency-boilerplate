@@ -102,7 +102,7 @@ interface Props {
     dynamicProps: DynamicProps;
     history: History;
     activeUser: ActiveUser | any;
-    account: Account;
+    account: Account | any;
     points: Points;
     signingKey: string;
     transactions: Transactions;
@@ -142,7 +142,7 @@ export const WalletBtc = (props: Props) => {
     useEffect(() => {
         const getMetaData = () => {
             try {
-                const metaData = JSON.parse(activeUser?.data?.posting_json_metadata);
+                const metaData = JSON.parse(account?.posting_json_metadata);
                 setJsonMetaData(metaData)
             } catch (error) {
                 console.log(error)
@@ -215,7 +215,8 @@ export const WalletBtc = (props: Props) => {
             <div className="wallet-ecency">
                 <div className="wallet-main">
                     <div className="wallet-info">
-                        <div className="balance-row alternative">
+                        {!jsonMetaData?.bitcoin && <div>{account.name} does not have a bitcoin profile</div>}
+                        {jsonMetaData?.bitcoin && <div className="balance-row alternative">
                             <div className="balance-info">
                                 <div className="title">Btc Address</div>
                                 <div className="description">Your bitcoin wallet address</div>
@@ -231,9 +232,9 @@ export const WalletBtc = (props: Props) => {
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </div>}
 
-                        <div className="balance-row alternative">
+                       {jsonMetaData?.bitcoin && <div className="balance-row alternative">
                             <div className="balance-info">
                                 <div className="title">{communityInfo?.title}</div>
                                 <div className="description">Your bitcoin wallet balance</div>
@@ -243,9 +244,9 @@ export const WalletBtc = (props: Props) => {
                                     {bitcoinBalance.toFixed(5)} (BTC)
                                 </div>
                             </div>
-                        </div>
+                        </div>}
 
-                        <div className="balance-row alternative">
+                        {/* <div className="balance-row alternative">
                             <div className="balance-info">
                                 <div className="title">Staked Token</div>
                                 <div className="description">Staked tokens are simila to hive power. The more tokens you stake, the more influnce you can have in rewarding other people's content</div>
@@ -255,9 +256,9 @@ export const WalletBtc = (props: Props) => {
                                     0.000 OrdsToken
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
-                        <div className="p-transaction-list">
+                        {jsonMetaData?.bitcoin && <div className="p-transaction-list">
                             <div className="transaction-list-header">
                                 <h2>Bitcoin Wallet Transactions</h2>
                             </div>
@@ -277,7 +278,7 @@ export const WalletBtc = (props: Props) => {
                                     </div>
                                 );
                             })()}
-                        </div>
+                        </div>}
                     </div>
                     <WalletMenu global={global} username={account.name} active="ecency" communityInfo={communityInfo} />
                 </div>
