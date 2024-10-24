@@ -44,7 +44,7 @@ interface Props {
     global: Global;
     history: History;
     activeUser: ActiveUser | any;
-    account: Account;
+    account: Account | any;
     section?: string;
     addAccount: (data: Account) => void;
     updateActiveUser: (data?: Account) => void;
@@ -95,6 +95,7 @@ export const ProfileCard = (props: Props) => {
     },[])
 
     useEffect(() => {
+        console.log(account)
         setFollowersList(false);
         setFollowingList(false);
         setFollowsActiveUserLoading(activeUser && activeUser.username ? true : false);
@@ -105,7 +106,7 @@ export const ProfileCard = (props: Props) => {
         console.log(global)
         const getMetaData = () => {
             try {
-                const metaData = JSON.parse(activeUser?.data?.posting_json_metadata);
+                const metaData = JSON.parse(account?.posting_json_metadata);
                 setJsonMetaData(metaData)
             } catch (error) {
                 console.log(error)
@@ -179,20 +180,20 @@ export const ProfileCard = (props: Props) => {
                 <ResourceCreditsInfo {...props} rcPercent={rcPercent} account={account} />
             </div>
 
-            { (global?.communityTitle === "Bitcoin Machines" && global?.hive_id === "hive-159314") && 
+            { (global?.hive_id === "hive-125568" || global?.hive_id === "hive-159314") && jsonMetaData?.bitcoin &&
             <div className="btc-profile">
                 <h5>BTC ordinal info</h5>
                 <div className="btc-info">
                     <span>Address:</span>
-                    <span className="b-info">{formatString(jsonMetaData?.bitcoin.address)}</span>
+                    <span className="b-info">{formatString(jsonMetaData?.bitcoin?.address)}</span>
                 </div>
                 <div className="btc-info">
                     <span>Message:</span>
-                    <span className="b-info">{jsonMetaData?.bitcoin.message}</span>
+                    <span className="b-info">{jsonMetaData?.bitcoin?.message}</span>
                 </div>
                 <div className="btc-info">
                     <span>Signature:</span>
-                    <span className="b-info">{formatString(jsonMetaData?.bitcoin.signature)}</span>
+                    <span className="b-info">{formatString(jsonMetaData?.bitcoin?.signature)}</span>
                 </div>
             </div> }
 

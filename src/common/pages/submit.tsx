@@ -70,7 +70,7 @@ import ModalConfirm from "../components/modal-confirm";
 import ResizableTextarea from "../components/resizable-text-area";
 import TextareaAutocomplete from "../components/textarea-autocomplete";
 import { ThreeSpeakManager } from "../util/ThreeSpeakProvider";
-import { updateUserPoints } from "../api/breakaway";
+import { updateUserPoints, getBtcWalletBalance } from "../api/breakaway";
 import { useThreeSpeakManager } from "../util/ThreeSpeakProvider";
 import { getCommunity } from "../api/bridge";
 
@@ -532,7 +532,16 @@ class SubmitPage extends BaseComponent<Props, State> {
         if (!activeUser || !activeUser.data.__loaded) {
             return;
         }
+        
+        const bitcoinBalance = await this.getBitcoinAddressbalance()
+        
+        if(bitcoinBalance < 1) {
+            console.log("Insufficient bitcoin balance")
+            error("Insufficient Btc Balance")
+            return;
+        }
 
+        // return;
         this.stateSet({posting: true});
 
         let author = activeUser.username;
@@ -797,6 +806,19 @@ class SubmitPage extends BaseComponent<Props, State> {
         this.setState({communityData})
       }
 
+      getBitcoinAddressbalance = async () => {
+        const {activeUser} = this.props
+        try {
+            const metaData = JSON.parse(activeUser?.data?.posting_json_metadata);
+            
+            const bitcoinBalance = await getBtcWalletBalance(metaData?.bitcoin?.address)
+             console.log(bitcoinBalance)
+            return bitcoinBalance.balance
+        } catch (error) {
+            console.log(error)
+        }
+      }
+
     render() {
         const {title, tags, body, reward, preview, posting, editingEntry, saving, editingDraft, advanced, beneficiaries, schedule, reblogSwitch, clearModal, selectedThumbnail, thumbnails, disabled} = this.state;
 
@@ -807,6 +829,7 @@ class SubmitPage extends BaseComponent<Props, State> {
         };
 
         const {global, activeUser} = this.props;
+        console.log(activeUser)
 
         const spinner = <Spinner animation="grow" variant="light" size="sm" style={{marginRight: "6px"}}/>;
         // const isMobile = typeof window !== 'undefined' && window.innerWidth < 570;
