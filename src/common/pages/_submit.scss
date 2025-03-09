@@ -139,7 +139,15 @@
       padding: 5px 12px;
       margin-top: 10px;
       font-size: 21px;
-      color: $tundora;
+      color: lighten($steel-grey, 10);
+
+      // @include themify(day) {
+      //   color: $warm-grey
+      // }
+
+      // @include themify(night) {
+      //   color: $warm-grey
+      // }
     }
 
     .preview-title {

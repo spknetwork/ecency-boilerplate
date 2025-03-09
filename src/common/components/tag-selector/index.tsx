@@ -145,10 +145,12 @@ export class TagSelector extends Component<Props, State> {
     };
 
     delete = (tag: string) => {
-        const {tags, onChange} = this.props;
-        const newTags = tags.filter((x) => x !== tag);
+        const { tags, onChange, global } = this.props;
+    
+        const newTags = tags.filter((x) => x === global.hive_id || x !== tag);
+    
         onChange(newTags);
-    };
+    };    
 
     onSort = (items: ItemInterface[]) => {
         const {onChange} = this.props;
@@ -241,7 +243,8 @@ export class TagSelector extends Component<Props, State> {
                                             className="item-delete"
                                             onClick={() => {
                                                 this.delete(x);
-                                            }}>{closeSvg}</span>
+                                            }}
+                                            >{closeSvg}</span>
                                     </div>
                                 );
                             })}

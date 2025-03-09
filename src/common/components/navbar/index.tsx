@@ -382,9 +382,20 @@ openSubmitPage = async () => {
                       >
                         {_t("g.login")}
                       </Button>
-                      <Link className="btn btn-primary" to="/signup">
-                        {_t("g.signup")}
-                      </Link>
+                      <>
+                      {global.hive_id === "hive-125568" ? <Button
+                            className="btn-login btn-primary"
+                            onClick={() => {
+                              window.location.href = "https://onboard.onebitcoinclub.org/one-btc-signup";
+                            }}
+                          >
+                            {_t("g.signup")}
+                          </Button>
+                          :
+                        <Link className="btn btn-primary" to="/signup">
+                          {_t("g.signup")}
+                        </Link>}
+                      </>
                     </div>
                     <div className="submit-post">
                       <ToolTip content={_t("navbar.post")}>

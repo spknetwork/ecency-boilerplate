@@ -60,6 +60,12 @@ const SignUpPage = (props: Props | any) => {
   const [accountType, setAccountType] = useState("Hive");
 
   useEffect(() => {
+   if(global.hive_id === "hive-125568") {
+    window.location.href = "https://onboard.onebitcoinclub.org/one-btc-signup";
+   }
+  }, []);
+
+  useEffect(() => {
     getCurrentCommunity();
   }, []);
 
