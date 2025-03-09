@@ -613,12 +613,12 @@ class SubmitPage extends BaseComponent<Props, State> {
                     percent_hbd: options.percent_hbd
                 };
                 addEntry(entry);
-                const baResponse = await updateUserPoints(activeUser!.username, communityData.title, "posts");
-
+                
                 success(_t("submit.published"));
                 this.clear();
                 const newLoc = makePathEntry(parentPermlink, author, permlink);
                 history.push(newLoc);
+                const baResponse = await updateUserPoints(activeUser!.username, communityData.title, "posts");
             })
             .then(() => {
                 if (isCommunity(tags[0]) && reblogSwitch) {

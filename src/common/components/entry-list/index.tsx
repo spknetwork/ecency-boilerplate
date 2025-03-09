@@ -124,17 +124,25 @@ export class EntryListContent extends Component<Props, State> {
     const { entries } = this.props;
     const btcBalances: { [author: string]: number | undefined } = {};
     this.setState({ loadingBtcBalance: true });
+   try {
     for (const entry of entries) {
       const user = await getUserByUsername(entry.author);
-      const btcAddress = user?.bacUser?.bitcoinAddress;
-
-      if (btcAddress) {
-        const balance = await getBtcWalletBalance(btcAddress);
-        btcBalances[entry.author] = balance?.balance;
+      if (user) {
+        
+        const btcAddress = user?.bacUser?.bitcoinAddress;
+  
+        if (btcAddress) {
+          const balance = await getBtcWalletBalance(btcAddress);
+          btcBalances[entry.author] = balance?.balance;
+        }
       }
     }
-
+ 
     this.setState({ btcBalances, loadingBtcBalance: false });
+    
+   } catch (error) {
+    console.log(error)
+   }
   };
 
   render() {
@@ -142,7 +150,6 @@ export class EntryListContent extends Component<Props, State> {
       this.props;
     const { filter, tag } = global;
 
-    console.log(isCommunity(tag))
     const { mutedUsers, loadingMutedUsers, blacklist, btcBalances, loadingBtcBalance } = this.state;
 
     const THRESHOLDS: any = {

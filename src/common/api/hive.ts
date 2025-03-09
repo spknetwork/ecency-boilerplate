@@ -147,9 +147,13 @@ export const getTrendingTags = (afterTag: string = "", limit: number = 250): Pro
 export const lookupAccounts = (q: string, limit = 50): Promise<string[]> =>
     client.database.call("lookup_accounts", [q, limit]);
 
+export const getAccountReputations = (q: string, limit = 50): Promise<any[]> =>
+    client.call("condenser_api", "get_account_reputations", [q, limit]);
+
 export const getAccounts = (usernames: string[]): Promise<FullAccount[]> => {
-    return client.database.getAccounts(usernames).then((resp: any[]): FullAccount[] =>
-        resp.map((x) => {
+    return client.database.getAccounts(usernames).then((resp: any[]): FullAccount[] | any =>
+        resp.map( (x: any) => {
+            // let re = await getAccountReputations(x.name, 1)
             const account: FullAccount = {
                 name: x.name,
                 owner: x.owner,
@@ -218,8 +222,14 @@ export const getAccounts = (usernames: string[]): Promise<FullAccount[]> => {
     );
 };
 
-export const getAccount = (username: string): Promise<FullAccount> => getAccounts([username]).then((resp) => resp[0]);
+// export const getAccount = (username: string): Promise<FullAccount> => getAccounts([username]).then((resp) => resp[0]);
 
+export const getAccount = async (username: string): Promise<FullAccount> => {
+    let aa = await getAccounts([username]).then((resp) => resp[0]);
+    let rp = await getAccountReputations(username, 1);
+    return { ...aa, ...rp[0] };
+  };
+  
 export const getAccountFull = (username: string): Promise<FullAccount> =>
     getAccount(username).then(async (account) => {
         let follow_stats: AccountFollowStats | undefined;

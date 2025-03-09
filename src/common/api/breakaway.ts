@@ -117,7 +117,6 @@ export const getBtcWalletBalance = async (address: string) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    // console.log(response)
 
     return response.data;
   } catch (error) {
@@ -133,7 +132,6 @@ export const getBtcTransactions = async (address: string) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    // console.log(response);
 
     return response.data;
   } catch (error) {
@@ -145,8 +143,13 @@ export const getBtcTransactions = async (address: string) => {
 export const getUserByUsername = async (username: string) => {
   try {
     const response = await axios.get(`${baUrl}/user/${username}`);
+    if(!response) {
 
-    return response.data;
+      return null
+    } else {
+      return response.data;
+    }
+
   } catch (error) {
     console.error('Error fetching user by username:', error);
     throw error;

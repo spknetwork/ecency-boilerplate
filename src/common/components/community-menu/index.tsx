@@ -42,6 +42,22 @@ export class CommunityMenu extends Component<Props> {
     const { community, match, global } = this.props;
     const { filter, name } = match.params;
     
+    const customItems = [
+      { label: "5,000sats", value: EntryFilter.created },
+      // { label: "50,000sats", value: EntryFilter.sats50000 },
+      // { label: "500,000sats", value: EntryFilter.sats500000 },
+      { label: "0.5BTC", value: EntryFilter.trending },
+      { label: "1BTC", value: EntryFilter.hot },
+    ];
+    
+    const defaultItems = [
+      { label: "Trending", value: EntryFilter.trending },
+      { label: "Hot", value: EntryFilter.hot },
+      { label: "Created", value: EntryFilter.created },
+      { label: "Payout", value: EntryFilter.payout },
+      { label: "Muted", value: EntryFilter.muted },
+    ];
+    
     const menuConfig: {
       history: History;
       label: string;
@@ -49,90 +65,92 @@ export class CommunityMenu extends Component<Props> {
     } = {
       history: this.props.history,
       label:
-        (filter === EntryFilter.trending)
-          ? "Community Posts"
-          : _t(`entry-filter.filter-${filter}`), // Keep for other translations
-      items: [
-        ...(global.hive_id === "hive-125568"
-          ? [
-              ...([{ label: "5,000stats", value: EntryFilter.created }]),
-              ...([{ label: "50,000stats", value: EntryFilter.sats50000 }]),
-              ...([{ label: "500,000sat", value: EntryFilter.sats500000 }]),
-              // ...([{ label: "0.5BTC", value: EntryFilter.trending }]),
-              ...([{ label: "0.5BTC", value: EntryFilter.trending }]),
-              ...( [{ label: "1BTC", value: EntryFilter.hot }]),
-            ]
-          : [
-              { label: "Trending", value: EntryFilter.trending },
-              { label: "Hot", value: EntryFilter.hot },
-              { label: "Created", value: EntryFilter.created },
-              { label: "Payout", value: EntryFilter.payout },
-              { label: "Muted", value: EntryFilter.muted },
-            ])
-      ].map((item) => {
-        return {
-          label: item.label, // Custom label starting with numbers
+        global.hive_id === "hive-125568"
+          ? customItems[0].label // Use the first label when hive_id matches
+          : _t(`entry-filter.filter-${filter}`), // Otherwise, use translation
+    
+      items: (global.hive_id === "hive-125568" ? customItems : defaultItems).map(
+        (item) => ({
+          label: item.label,
           href: `/${item.value}/${community.name}`,
           active: filter === item.value,
-        };
-      }),
+        })
+      ),
     };
+
+    const showFeedInfo = filter === "created" || filter === "hot" || filter === "trending"
     
     return (
-      <div className="community-menu">
-        <div className="menu-items">
-          <>
-            <span className="d-flex d-lg-none community-menu-item selected-item">
-              <DropDown {...menuConfig} float="left" />
-            </span>
-            <div className="d-none d-lg-flex align-items-center">
-              {menuConfig.items.map((menuItem) => (
-                <Link
-                  className={_c(
-                    `community-menu-item ${
-                      menuItem.active ? "selected-item" : ""
-                    }`
-                  )}
-                  to={menuItem.href!}
-                  key={`community-menu-item-${menuItem.label}`}
-                >
-                  {menuItem.label}
-                </Link>
-              ))}
-            </div>
-          </>
-
-          <Link
-            to={`/subscribers/${name}`}
-            className={_c(
-              `community-menu-item ${
-                filter === "subscribers" ? "selected-item" : ""
-              }`
-            )}
-          >
-            {_t("community.subscribers")}
-          </Link>
-          <Link
-            to={`/activities/${name}`}
-            className={_c(
-              `community-menu-item ${
-                filter === "activities" ? "selected-item" : ""
-              }`
-            )}
-          >
-            {_t("community.activities")}
-          </Link>
-        </div>
-
-        {EntryFilter[filter as EntryFilter] && (
-          <div className="page-tools">
-            <ListStyleToggle
-              global={this.props.global}
-              toggleListStyle={this.props.toggleListStyle}
-            />
+      <>
+       {showFeedInfo && (
+          <div style={{ color: "orange" }}>
+            Showing feeds from{" "}
+            {filter === "created"
+              ? "5000 sats"
+              : filter === "trending"
+              ? "0.5 BTC"
+              : filter === "hot"
+              ? "1 BTC"
+              : null}{" "}
+            and above
           </div>
         )}
-      </div>
+
+        <div className="community-menu">
+          <div className="menu-items">
+            <>
+              <span className="d-flex d-lg-none community-menu-item selected-item">
+                <DropDown {...menuConfig} float="left" />
+              </span>
+              <div className="d-none d-lg-flex align-items-center">
+                {menuConfig.items.map((menuItem) => (
+                  <Link
+                    className={_c(
+                      `community-menu-item ${
+                        menuItem.active ? "selected-item" : ""
+                      }`
+                    )}
+                    to={menuItem.href!}
+                    key={`community-menu-item-${menuItem.label}`}
+                  >
+                    {menuItem.label}
+                  </Link>
+                ))}
+              </div>
+            </>
+
+            <Link
+              to={`/subscribers/${name}`}
+              className={_c(
+                `community-menu-item ${
+                  filter === "subscribers" ? "selected-item" : ""
+                }`
+              )}
+            >
+              {_t("community.subscribers")}
+            </Link>
+            <Link
+              to={`/activities/${name}`}
+              className={_c(
+                `community-menu-item ${
+                  filter === "activities" ? "selected-item" : ""
+                }`
+              )}
+            >
+              {_t("community.activities")}
+            </Link>
+          </div>
+
+          {EntryFilter[filter as EntryFilter] && (
+            <div className="page-tools">
+              <ListStyleToggle
+                global={this.props.global}
+                toggleListStyle={this.props.toggleListStyle}
+              />
+            </div>
+          )}
+        </div>
+      </>
     );
   }
 }
