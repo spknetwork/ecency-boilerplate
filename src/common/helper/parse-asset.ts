@@ -27,16 +27,16 @@ export interface Asset {
 
 export default (sval: string | SMTAsset): Asset => {
     if (typeof sval === 'string') {
-        const sp = sval.split(' ');
+        const sp = sval?.split(' ');
         const symbol = SymbolMap[sp[1]];
         return {
             amount: parseFloat(sp[0]),
             symbol: symbol || Symbol.HIVE,
         };
     } else {
-        const symbol = SymbolMap[sval.nai];
+        const symbol = SymbolMap[sval?.nai];
         return {
-            amount: parseFloat(sval.amount.toString()) / Math.pow(10, sval.precision),
+            amount: parseFloat(sval?.amount.toString()) / Math.pow(10, sval?.precision),
             symbol: symbol || Symbol.HIVE,
         };
     }
