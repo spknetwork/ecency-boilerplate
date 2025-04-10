@@ -21,7 +21,8 @@ setProxyBase(defaults.imageServer);
 import {_t} from "../../i18n";
 import {Global} from '../../store/global/types';
 import * as ls from "../../util/local-storage";
-import { updateUserPoints } from "../../api/breakaway";
+import { getUserByUsername, updateUserPoints } from "../../api/breakaway";
+import { error } from "../feedback";
 
 interface PreviewProps {
     text: string;
@@ -135,7 +136,30 @@ export class Comment extends Component<Props, State> {
     submit = async () => {
         const {text, communityData} = this.state;
         const {onSubmit, activeUser} = this.props;
-        try {            
+        try {
+            // return
+            //Check if user has btc
+            if((this.props.global.hive_id === "hive-125568" || this.props.global.hive_id === "hive-159314" )) {
+                const baUser = await getUserByUsername(activeUser!.username)
+            
+                let btcAddress;
+        
+                if(baUser?.bacUser?.bitcoinAddress) {
+                  btcAddress = baUser?.bacUser?.bitcoinAddress
+                //   const addressBalance = await getBtcWalletBalance(baUser?.bacUser?.bitcoinAddress);
+                //   if(addressBalance.balance < 0.00005) {
+                //     error("You must have at least 0.00005 btc to create a post");
+                //     return;
+                //   } else {
+                //     history.push(`/submit?com=${global?.hive_id}`);
+                //   }
+          
+                } else {
+                  error("Sorry, you have no bitcoin profile");
+                  return
+                }
+        
+              }  
             onSubmit(text);
             const res = await updateUserPoints(activeUser!.username, communityData.title, "comments")
         } catch (error) {

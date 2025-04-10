@@ -116,6 +116,18 @@
     }
   }
 
+  .lightning-zapps{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .zapps-address-qr{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
   .vpower-line {
     // background: $duck-egg-blue;
     // height: 15px;

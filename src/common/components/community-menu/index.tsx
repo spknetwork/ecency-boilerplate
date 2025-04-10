@@ -42,6 +42,7 @@ export class CommunityMenu extends Component<Props> {
     const { community, match, global } = this.props;
     const { filter, name } = match.params;
     
+    /////to be removed
     const customItems = [
       { label: "5,000sats", value: EntryFilter.created },
       // { label: "50,000sats", value: EntryFilter.sats50000 },
@@ -66,8 +67,8 @@ export class CommunityMenu extends Component<Props> {
       history: this.props.history,
       label:
         global.hive_id === "hive-125568"
-          ? customItems[0].label // Use the first label when hive_id matches
-          : _t(`entry-filter.filter-${filter}`), // Otherwise, use translation
+          ? customItems[0].label
+          : _t(`entry-filter.filter-${filter}`),
     
       items: (global.hive_id === "hive-125568" ? customItems : defaultItems).map(
         (item) => ({
@@ -77,25 +78,9 @@ export class CommunityMenu extends Component<Props> {
         })
       ),
     };
-
-    const showFeedInfo = filter === "created" || filter === "hot" || filter === "trending"
     
     return (
       <>
-       {showFeedInfo && (
-          <div style={{ color: "orange" }}>
-            Showing feeds from{" "}
-            {filter === "created"
-              ? "5000 sats"
-              : filter === "trending"
-              ? "0.5 BTC"
-              : filter === "hot"
-              ? "1 BTC"
-              : null}{" "}
-            and above
-          </div>
-        )}
-
         <div className="community-menu">
           <div className="menu-items">
             <>

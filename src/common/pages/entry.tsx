@@ -29,7 +29,7 @@ import Comment from "../components/comment"
 import SimilarEntries from "../components/similar-entries";
 import BookmarkBtn from "../components/bookmark-btn";
 import EditHistory from "../components/edit-history";
-import {error} from "../components/feedback";
+import {error, success} from "../components/feedback";
 import Meta from "../components/meta";
 import Theme from "../components/theme/index";
 import Feedback from "../components/feedback";
@@ -73,6 +73,8 @@ import { deleteForeverSvg, pencilOutlineSvg } from "../img/svg";
 import entryDeleteBtn from "../components/entry-delete-btn";
 import { SelectionPopover } from "../components/selection-popover";
 import { commentHistory } from "../api/private-api";
+import QRCode from "react-qr-code";
+import { Button } from "react-bootstrap";
 
 setProxyBase(defaults.imageServer);
 
@@ -102,6 +104,7 @@ interface State {
     isMounted: boolean;
     postIsDeleted: boolean;
     deletedEntry: {title: string, body: string, tags: any} | null;
+    showZapps: boolean;
 }
 
 class EntryPage extends BaseComponent<Props, State> {
@@ -118,7 +121,8 @@ class EntryPage extends BaseComponent<Props, State> {
         isMounted: false,
         selection: "",
         postIsDeleted: false,
-        deletedEntry: null
+        deletedEntry: null,
+        showZapps: false,
     };
 
     commentInput: Ref<HTMLInputElement>;
@@ -388,7 +392,7 @@ class EntryPage extends BaseComponent<Props, State> {
         const permlink = createReplyPermlink(entry.author);
         const tags = entry.json_metadata.tags || ['ecency'];
 
-        const jsonMeta = makeJsonMetaDataReply(
+        const jsonMeta: any = makeJsonMetaDataReply(
             tags,
             version
         );
@@ -463,8 +467,18 @@ class EntryPage extends BaseComponent<Props, State> {
         }
     }
 
+    copyToClipboard = (text: string) => {
+      const textField = document.createElement('textarea');
+      textField.innerText = text;
+      document.body.appendChild(textField);
+      textField.select();
+      document.execCommand('copy');
+      textField.remove();
+      success("Copied to clipboard");
+  }
+
     render() {
-        const {loading, replying, showIfNsfw, editHistory, entryIsMuted, edit, comment, /*commentText,*/ isMounted, postIsDeleted, deletedEntry, showProfileBox} = this.state;
+        const {loading, replying, showIfNsfw, editHistory, entryIsMuted, edit, comment, /*commentText,*/ isMounted, postIsDeleted, deletedEntry, showProfileBox, showZapps} = this.state;
         const {global, history, match} = this.props;
 
         let navBar = global.isElectron ? NavBarElectron({
@@ -553,7 +567,6 @@ class EntryPage extends BaseComponent<Props, State> {
         }
         const app = appName(entry.json_metadata.app);
         const appShort = app.split('/')[0].split(' ')[0];
-
         
         const {activeUser} = this.props;
         
@@ -1173,13 +1186,13 @@ class EntryPage extends BaseComponent<Props, State> {
                                             </span>
                                             <div className="app" title={app}>
                                               {/* We should soww exact community */}
-                                              <span>Posted from {global.communityTitle}</span>
-                                              {/* <Tsx
+                                              {/* <span>Posted from {global.communityTitle}</span> */}
+                                              <Tsx
                                                 k="entry.via-app"
                                                 args={{ app: appShort }}
                                               >
-                                                <a href="https://starterkit.tech/faqs#source-label" />
-                                              </Tsx> */}
+                                                <a href="/" />
+                                              </Tsx>
                                             </div>
                                           </>
                                         )}
@@ -1225,6 +1238,48 @@ class EntryPage extends BaseComponent<Props, State> {
                                           separatedSharing: true,
                                         })}
                                       </div>
+                                      
+                                      {/* WILL FIX THIS ON A NEW BRANCH --- SHOULD BE IN TRANSACTION MODAL*/}
+                                      {/* {global.hive_id === "hive-125568" && <div className="d-flex justify-content-center align-items-center flex-column">
+                                        <Button
+                                        className="w-50"
+                                            onClick={() => {
+                                                this.setState({showZapps: !showZapps})
+                                            }}
+                                        >{showZapps ? `Hide QR` : `Tip this author`}</Button>
+                                        {showZapps && <div className="d-flex justify-content-center align-items-center flex-column mt-3">
+                                            <p>Click QR code to copy lightning address</p>
+                                            <div 
+                                                onClick={()=> this.copyToClipboard("btc4content@sats.v4v.app")}
+                                                style={{ position: "relative", display: "inline-block", cursor: "pointer" }}>
+                                                <QRCode
+                                                    size={256}
+                                                    style={{ height: "200px", maxWidth: "200px", width: "200px" }}
+                                                    value={"btc4content@sats.v4v.app"}
+                                                    // value={jsonMetaData?.profile?.btcLightningAddress}
+                                                    viewBox="0 0 256 256"
+                                                    bgColor="#2e4053"
+                                                    fgColor="gold"
+                                                />
+                                                <img
+                                                    src="https://images.ecency.com/u/hive-125568/avatar/lardge"
+                                                    alt="logo"
+                                                    style={{
+                                                    position: "absolute",
+                                                    top: "50%",
+                                                    left: "50%",
+                                                    transform: "translate(-50%, -50%)",
+                                                    width: "40px",
+                                                    height: "40px",
+                                                    borderRadius: "8px",
+                                                    background: "white",
+                                                    padding: "4px"
+                                                    }}
+                                                />
+                                            </div>     
+                                        </div>}
+                                      </div>} */}
+
                                     </div>
 
                                     {originalEntry && (

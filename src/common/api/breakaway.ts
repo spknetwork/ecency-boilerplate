@@ -140,21 +140,52 @@ export const getBtcTransactions = async (address: string) => {
   }
 };
 
+// export const getUserByUsername = async (username: string) => {
+//   try {
+//     const response = await axios.get(`${baUrl}/user/${username}`);
+//     console.log("...resp....",response)
+//     if(!response) {
+//       console.log("no user found here....")
+
+//       return
+//     } else {
+//       return response.data;
+//     }
+
+//   } catch (error) {
+//     console.error('Error fetching user by username:', error);
+//     throw error;
+//   }
+// };
+
 export const getUserByUsername = async (username: string) => {
   try {
     const response = await axios.get(`${baUrl}/user/${username}`);
-    if(!response) {
 
-      return null
-    } else {
+    if (response?.status === 200 && response?.data) {
       return response.data;
+    } else {
+      return null;
     }
-
-  } catch (error) {
-    console.error('Error fetching user by username:', error);
+  } catch (error: any) {
+    if (error.response && error.response.status === 404) {
+      return null;
+    }
+    
+    console.error("Error fetching user by username:", error);
     throw error;
   }
 };
+
+export const fetchBtcUsers = async () => {
+  try {
+    const response = await axios.get(`${baUrl}/btc-users`);
+    return response.data
+  } catch (error) {
+    console.error('Error fetching BTC users:',error);
+  }
+};
+
 
 export const createFreeAccount = async (username: string, keys: any) => {
   try {

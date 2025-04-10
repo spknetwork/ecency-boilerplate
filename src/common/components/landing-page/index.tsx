@@ -4,6 +4,7 @@ import { getCommunity } from "../../api/bridge";
 import defaults from "../../constants/defaults.json";
 import { _t } from "../../i18n";
 import { Spinner } from "react-bootstrap";
+import * as ls from "../../util/local-storage";
 
 const LandingPage = (props: any) => {
   const { global, activeUser } = props;
@@ -20,12 +21,13 @@ const LandingPage = (props: any) => {
         setCommunity(community.title);
       }
     });
+    ls.remove("selectedLabel")
 
     return () => clearInterval(updateTimer);
   }, []);
 
   return activeUser || (community && time <= 0) ? (
-    <Redirect to={`/trending/${global.hive_id}`} />
+    <Redirect to={`/created/${global.hive_id}`} />
   ) : (
     <div
       className={global.isElectron ? "landing-wrapper pt-5" : "landing-wrapper"}

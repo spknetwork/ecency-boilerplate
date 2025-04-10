@@ -23,6 +23,9 @@ import axios from "axios";
 import { getBlacklist } from "../../../server/util";
 import { getBtcWalletBalance, getUserByUsername } from "../../api/breakaway";
 import EntryListLoadingItem from "../entry-list-loading-item";
+import * as ls from "../../util/local-storage";
+
+const satsLabel = ls.get("selectedLabel")
 
 interface Props {
   history: History;
@@ -153,11 +156,14 @@ export class EntryListContent extends Component<Props, State> {
     const { mutedUsers, loadingMutedUsers, blacklist, btcBalances, loadingBtcBalance } = this.state;
 
     const THRESHOLDS: any = {
-      created: 0.00005,
-      sats50000: 0.0005,
-      sats500000: 0.005,
-      trending: 0.4,
-      hot: 1,
+      created: satsLabel === "5,000sats" ?  0.00005 : 
+        satsLabel === "50,000sats" ?  0.0005 : 
+        satsLabel === "500,000sats" ?  0.005 :
+        satsLabel === "0.5BTC" ?  0.5 :
+        satsLabel === "1BTC" ?  1 :
+        null,
+      // trending: /////SHOULD HAVE TRENDING FOR ALL TIERS
+      // hot: 1,  /////SHOULD HAVE HOT FOR ALL TIERS
     };
 
     const filteredEntries = entries.filter((entry) => {

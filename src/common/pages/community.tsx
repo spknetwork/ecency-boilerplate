@@ -46,6 +46,7 @@ import defaults from "../constants/defaults.json";
 import SearchBox from "../components/search-box";
 import { setupConfig } from "../../setup";
 import { ObtcListContent } from "../components/entry-list/obclub";
+import ObcCommunityMenu from "../components/community-menu/ObcCommunityMenu";
 
 interface MatchParams {
   filter: string;
@@ -101,8 +102,6 @@ class CommunityPage extends BaseComponent<Props, State> {
     const { filter, name } = match.params;
     // const filt = filter === "hot" ? "hot" : filter === "trending" ? "trending" : "created"
     if (EntryFilter[filter as EntryFilter]) {
-      console.log("object...filter", filter, filter === "sats500000", EntryFilter[filter as EntryFilter], name)
-      // fetch blog posts.
       fetchEntries(filter, name, false);
     }
 
@@ -151,10 +150,8 @@ class CommunityPage extends BaseComponent<Props, State> {
   getPosts = async () => {
     const { fetchEntries, match } = this.props;
     const { filter, name } = match.params;
-    console.log("object.....psits")
     try {
       const entr = fetchEntries(filter, name, false);
-      console.log("object....entry", entr)
     } catch (error) {
       
     }
@@ -339,10 +336,12 @@ class CommunityPage extends BaseComponent<Props, State> {
             <meta itemProp="url" content={`${defaults.base}${url}`} />
           </span>
           <div className="content-side">
-            {CommunityMenu({
-              ...this.props,
-              community,
-            })}
+
+          {global.hive_id === "hive-125568" ? (
+            <ObcCommunityMenu {...this.props} community={community} />
+          ) : (
+            <CommunityMenu {...this.props} community={community} />
+          )}
 
             {CommunityCover({
               ...this.props,
