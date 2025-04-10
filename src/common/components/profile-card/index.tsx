@@ -43,6 +43,7 @@ import { getBtcWalletBalance, getUserByUsername } from "../../api/breakaway";
 import { copyContent } from "../../img/svg";
 import { Button } from "react-bootstrap";
 import { success } from "../feedback";
+import QRCode from "react-qr-code";
 
 interface Props {
     global: Global;
@@ -70,7 +71,8 @@ export const ProfileCard = (props: Props) => {
     const [rcPercent, setRcPercent] = useState(100);
     const [jsonMetaData, setJsonMetaData] = useState<any>(null)
     const [btcBalance, setBtcBalance] = useState<any>(0.000);
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [showZapps, setShowZapps] = useState(false)
     
     const [, updateState] = useState();
     const forceUpdate = useCallback(() => updateState({} as any), []);
@@ -264,6 +266,47 @@ export const ProfileCard = (props: Props) => {
                     Click to add bitcoin profile
                 </a>}
             </div>) }
+            
+
+            {/* WILL FIX THIS ON A NEW BRANCH --- SHOULD BE IN TRANSACTION MODAL*/}
+            {/* {global.hive_id === "hive-125568" && <div className="lightning-zapps">
+            <Button
+                onClick={() => {
+                    setShowZapps(!showZapps)
+                }}
+            >{showZapps ? `Hide QR` : `Tip this user`}</Button>
+            {showZapps && <div className="zapps-address-qr">
+                <p>Click QR code to copy lightning address</p>
+                <div 
+                    onClick={()=> copyToClipboard("btc4content@sats.v4v.app")}
+                    style={{ position: "relative", display: "inline-block", cursor: "pointer" }}>
+                    <QRCode
+                        size={256}
+                        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                        value={"btc4content@sats.v4v.app"}
+                        // value={jsonMetaData?.profile?.btcLightningAddress}
+                        viewBox="0 0 256 256"
+                        bgColor="#2e4053"
+                        fgColor="gold"
+                    />
+                    <img
+                        src="https://images.ecency.com/u/hive-125568/avatar/lardge"
+                        alt="logo"
+                        style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "8px",
+                        background: "white",
+                        padding: "4px"
+                        }}
+                    />
+                </div>     
+            </div>}
+            </div>} */}
 
             {loggedIn && !isMyProfile && 
             <div className="d-flex justify-content-center mb-3 d-md-block">

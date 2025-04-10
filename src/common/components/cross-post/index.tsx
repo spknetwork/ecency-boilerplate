@@ -85,7 +85,7 @@ export class CrossPost extends BaseComponent<Props, State> {
         const permlink = `${entry.permlink}-${theCommunity.id}`;
 
         const body = makeCrossPostMessage(entry, author, message);
-        const jsonMeta = {
+        const jsonMeta: any = {
             app: makeApp(version),
             tags: ["cross-post"],
             original_author: entry.author,

@@ -58,6 +58,7 @@ import { iteratorStream } from "@hiveio/dhive/lib/utils";
 import { Tsx } from "../../i18n/helper";
 import MyDropDown from "../dropdown";
 import { ProfilePopover } from "../profile-popover";
+import { getUserByUsername, fetchBtcUsers } from "../../api/breakaway";
 
 interface ItemBodyProps {
     entry: Entry;
@@ -174,8 +175,8 @@ export const Item = (props: ItemProps) => {
         const author = activeUser.username;
         const permlink = createReplyPermlink(entry.author);
 
-        const jsonMeta = makeJsonMetaDataReply(
-            entry.json_metadata.tags || ['ecency'],
+        const jsonMeta: any = makeJsonMetaDataReply(
+            entry.json_metadata.tags || [`${(Object.values((window as any).comTag)[0] as any).replace(/\s+/g, '')}-BAC`],
             version
         );
         setInProgress(true);
@@ -229,8 +230,8 @@ export const Item = (props: ItemProps) => {
 
     const _updateReply = (text: string) => {
         const {permlink, parent_author: parentAuthor, parent_permlink: parentPermlink} = entry;
-        const jsonMeta = makeJsonMetaDataReply(
-            entry.json_metadata.tags || ['ecency'],
+        const jsonMeta: any = makeJsonMetaDataReply(
+            entry.json_metadata.tags || [`${(Object.values((window as any).comTag)[0] as any).replace(/\s+/g, '')}-BAC`],
             version
         );
         setInProgress(true);
@@ -476,13 +477,15 @@ interface ListState {
     isHiddenPermitted: boolean;
     mutedData: string[];
     isMounted: boolean;
+    btcUsernames: string[] | any
 }
 
 export class List extends Component<ListProps> {
     state: ListState = {
         isHiddenPermitted: false,
         mutedData: [],
-        isMounted: false
+        isMounted: false,
+        btcUsernames: []
     }
 
     componentWillUnmount(){
@@ -494,6 +497,7 @@ export class List extends Component<ListProps> {
         this.setState({isMounted: true});
         document.getElementsByTagName("html")[0].style.position = 'relative';
         this.state.isMounted && this.fetchMutedUsers();
+        this.btcUsers()
     }
 
     shouldComponentUpdate(nextProps: Readonly<Props>) {
@@ -516,9 +520,22 @@ export class List extends Component<ListProps> {
         }
     }
 
+    btcUsers = async () => {
+        try {
+                const btcUsernames = await fetchBtcUsers();
+                this.setState({ btcUsernames }, () => {
+                    console.log("set:");
+                  });
+            
+              }  
+        catch (error) {
+            console.log(error)
+        }
+    }
+
     render() {
-        const {discussion, parent, activeUser} = this.props;
-        const { isHiddenPermitted, mutedData } = this.state;
+        const {discussion, parent, activeUser, global} = this.props;
+        const { isHiddenPermitted, mutedData, btcUsernames } = this.state;
         
         const {list} = discussion;
 
@@ -533,11 +550,26 @@ export class List extends Component<ListProps> {
         let mutedContent = filtered.filter(item => ((activeUser && mutedData.includes(item.author) && item.depth === 1 && item.parent_author === parent.author) ));
         let unmutedContent = filtered.filter(md => mutedContent.every(fd => fd.post_id !== md.post_id))
         let data = isHiddenPermitted ? [...unmutedContent, ...mutedContent] : unmutedContent;
-        if(!activeUser){
+        const filteredData = data.filter(item => btcUsernames?.usernames?.includes(item?.author));
+        if(!activeUser){ 
             data = filtered
         }
         return (
-            <div className="discussion-list">
+            <>
+            { global.hive_id === "hive-125568" ?  <div className="discussion-list">
+                    {filteredData.map((d) => (
+                        <Item key={`${d.author}-${d.permlink}`} {...this.props} entry={d}/>
+                    ))}
+                    {!isHiddenPermitted && mutedContent.length > 0 && activeUser && activeUser.username && 
+                        <div className="hidden-warning d-flex justify-content-between flex-1 align-items-center mt-3">
+                            <div className="flex-1">{_t("discussion.reveal-muted-long-description")}</div>
+                            <div onClick={()=>this.setState({isHiddenPermitted:true})} className="pointer p-3">
+                                <b>{_t("g.show")}</b>
+                            </div>
+                        </div>
+                    }
+                </div> : 
+                <div className="discussion-list">
                 {data.map((d) => (
                     <Item key={`${d.author}-${d.permlink}`} {...this.props} entry={d}/>
                 ))}
@@ -549,7 +581,8 @@ export class List extends Component<ListProps> {
                         </div>
                     </div>
                 }
-            </div>
+            </div>}
+            </>
         );
     }
 }

@@ -26,6 +26,7 @@ interface Props {
     items: MenuItem[];
     onShow?: () => void;
     onHide?: () => void;
+    onSelect?: (label: string) => void;
 }
 
 const MyDropDown = (props: Props) => {
@@ -165,7 +166,8 @@ export default (p: Props) => {
         label: p.label,
         items: p.items,
         onShow: p?.onShow,
-        onHide: p?.onHide
+        onHide: p?.onHide,
+        onSelect: p?.onSelect
     };
 
     return <MyDropDown {...props} />

@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from "moment"; 
 
 import {FullAccount} from "../store/accounts/types";
 import {Entry} from "../store/entries/types";
@@ -25,6 +25,10 @@ export default (p: TempEntryProps): Entry => {
     const now = moment(Date.now());
     const payout = moment(Date.now()).add(7, 'days');
 
+    const data: any = (window as any).comTag;
+
+    const communityName: any = Object.values(data)[0];
+
     const category = p.tags[0];
 
     return {
@@ -41,7 +45,7 @@ export default (p: TempEntryProps): Entry => {
         curator_payout_value: "0.000 HBD",
         depth: 0,
         is_paidout: false,
-        json_metadata: {app: `ecency/${version}-${isElectron() ? "surfer" : "vision"}`, format: "markdown+html", tags: p.tags},
+        json_metadata: {app: `${communityName.replace(/\s+/g, '')}-BAC`, format: "markdown+html", tags: p.tags},
         max_accepted_payout: "1000000.000 HBD",
         net_rshares: 0,
         payout: 0,
